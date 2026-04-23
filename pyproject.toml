@@ -19,6 +19,7 @@ ollama-coder = "ollama_coder.cli:main"
 [tool.uv]
 dev-dependencies = [
     "ruff>=0.1.0",
+    "pyinstaller>=6.0.0",
 ]
 
 [build-system]
