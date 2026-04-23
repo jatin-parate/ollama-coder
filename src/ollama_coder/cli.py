@@ -4,8 +4,11 @@ import json
 import logging
 import os
 import re
+import sqlite3
 import subprocess
 import sys
+import threading
+import time
 from pathlib import Path
 from typing import Any, List, Tuple
 
@@ -300,6 +303,112 @@ class WriteFileTool(BaseModel):
         }
 
 
+class ProjectMemoryStore:
+    """Persist and retrieve durable project facts from a local SQLite database."""
+
+    def __init__(self, project_root: Path) -> None:
+        self.project_root = project_root.resolve()
+        self.db_path = self.project_root / "memroy.db"
+        self._initialize()
+
+    def _initialize(self) -> None:
+        """Create the database schema if it does not exist."""
+        with sqlite3.connect(self.db_path) as connection:
+            connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS facts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    fact TEXT NOT NULL UNIQUE,
+                    keywords TEXT NOT NULL,
+                    source_context TEXT,
+                    created_at REAL NOT NULL,
+                    updated_at REAL NOT NULL
+                )
+                """
+            )
+            connection.commit()
+
+    def search(self, query: str, limit: int = 6) -> list[str]:
+        """Return the most relevant stored facts for a query."""
+        normalized_query = query.strip()
+        with sqlite3.connect(self.db_path) as connection:
+            rows = connection.execute(
+                "SELECT fact, keywords, updated_at FROM facts ORDER BY updated_at DESC"
+            ).fetchall()
+
+        if not normalized_query:
+            return [fact for fact, _, _ in rows[:limit]]
+
+        query_terms = self._tokenize(normalized_query)
+
+        ranked_rows: list[tuple[int, float, str]] = []
+        recent_facts: list[str] = []
+        for fact, keywords, updated_at in rows:
+            recent_facts.append(fact)
+            keyword_terms = set(filter(None, keywords.split(" ")))
+            overlap = len(query_terms & keyword_terms)
+            if overlap == 0:
+                continue
+            ranked_rows.append((overlap, updated_at, fact))
+
+        ranked_rows.sort(key=lambda item: (item[0], item[1]), reverse=True)
+        selected_facts = [fact for _, _, fact in ranked_rows[:limit]]
+        for fact in recent_facts:
+            if len(selected_facts) >= limit:
+                break
+            if fact not in selected_facts:
+                selected_facts.append(fact)
+        return selected_facts
+
+    def upsert_facts(self, facts: list[str], source_context: str) -> int:
+        """Insert new facts or refresh timestamps for existing facts."""
+        cleaned_facts = []
+        seen_facts: set[str] = set()
+        for fact in facts:
+            normalized_fact = self._normalize_fact(fact)
+            if not normalized_fact or normalized_fact in seen_facts:
+                continue
+            seen_facts.add(normalized_fact)
+            cleaned_facts.append(normalized_fact)
+
+        if not cleaned_facts:
+            return 0
+
+        now = time.time()
+        with sqlite3.connect(self.db_path) as connection:
+            for fact in cleaned_facts:
+                keywords = " ".join(sorted(self._tokenize(fact)))
+                connection.execute(
+                    """
+                    INSERT INTO facts (fact, keywords, source_context, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(fact) DO UPDATE SET
+                        keywords = excluded.keywords,
+                        source_context = excluded.source_context,
+                        updated_at = excluded.updated_at
+                    """,
+                    (fact, keywords, source_context[:2000], now, now),
+                )
+            connection.commit()
+
+        return len(cleaned_facts)
+
+    def _normalize_fact(self, fact: str) -> str:
+        """Normalize fact strings before persisting them."""
+        normalized_fact = re.sub(r"\s+", " ", fact).strip()
+        if len(normalized_fact) < 12:
+            return ""
+        return normalized_fact[:400]
+
+    def _tokenize(self, text: str) -> set[str]:
+        """Tokenize text for simple keyword matching."""
+        return {
+            token
+            for token in re.findall(r"[a-z0-9][a-z0-9._-]{1,}", text.lower())
+            if token not in {"that", "this", "with", "from", "into", "should", "would", "there", "their", "about"}
+        }
+
+
 class OllamaChatCLI:
     """A terminal chat application using Ollama."""
 
@@ -326,10 +435,9 @@ class OllamaChatCLI:
         self.console = Console()
         self.memory = MemorySaver()
         self.chat_history: List[Tuple[str, str]] = []
-        self.current_dir = Path.cwd()
-
-        # System prompt for the agent
-        self.system_prompt = self._build_system_prompt()
+        self.project_root = Path.cwd().resolve()
+        self.current_dir = self.project_root
+        self.project_memory = ProjectMemoryStore(self.project_root)
 
         # Keep the model resident and cap the dynamic suffix so Ollama can reuse
         # the same prompt prefix across turns.
@@ -453,12 +561,137 @@ When given a complex task (like building a React component, refactoring code, or
 ## Current Working Directory
 Your operations are restricted to: {cwd}
 
+## Project Memory
+- Before making decisions, consider any stored project facts that are included in the system prompt.
+- Treat stored facts as durable project conventions unless the current repository state or the user explicitly contradicts them.
+- When a stored fact says to prefer one tool or workflow, follow it consistently during the task.
+
 ## Important Notes
 - You can only create/edit files within the current working directory
 - Always verify file paths are correct before making changes
 - Use the tools iteratively - read, plan, execute, verify
 - For complex tasks, break them into smaller, manageable steps
 - Communicate your progress and reasoning clearly"""
+
+    def _build_memory_context(self, query: str) -> str:
+        """Build the project-memory section for the current task."""
+        relevant_facts = self.project_memory.search(query)
+        if not relevant_facts:
+            return "\n\n## Stored Project Facts\n- No stored project facts were found for this task."
+
+        facts_text = "\n".join(f"- {fact}" for fact in relevant_facts)
+        return f"\n\n## Stored Project Facts\n{facts_text}"
+
+    def _extract_active_user_query(self, messages: list[Any]) -> str:
+        """Return the most recent human message to drive memory retrieval."""
+        for message in reversed(messages):
+            if getattr(message, "type", None) == "human" and hasattr(message, "content"):
+                return str(message.content)
+        return ""
+
+    def _extract_project_facts(self, transcript: str) -> list[str]:
+        """Extract durable project facts from a finished turn."""
+        extraction_prompt = (
+            "Extract durable, project-specific facts from this completed coding task. "
+            "Only keep facts that will help future tasks in the same repository, such as package managers, "
+            "workspace tools, build commands, test commands, frameworks, important directories, or coding conventions. "
+            "Ignore transient details. Return strict JSON with shape {\"facts\": [\"fact 1\", \"fact 2\"]}. "
+            "Keep each fact under 140 characters and phrase it as an instruction or durable repository fact.\n\n"
+            f"Transcript:\n{transcript[:12000]}"
+        )
+
+        try:
+            extraction_response = self.base_model.invoke(extraction_prompt)
+            content = getattr(extraction_response, "content", "")
+            if isinstance(content, list):
+                content = "\n".join(str(item) for item in content)
+            payload = self._extract_json_object(str(content))
+            facts = payload.get("facts", []) if isinstance(payload, dict) else []
+            if isinstance(facts, list):
+                normalized_facts = [str(fact).strip() for fact in facts if str(fact).strip()]
+                if normalized_facts:
+                    return normalized_facts
+        except Exception as e:
+            logger.warning(f"Project memory extraction failed, using heuristic fallback: {e}")
+
+        return self._extract_project_facts_heuristic(transcript)
+
+    def _extract_project_facts_heuristic(self, transcript: str) -> list[str]:
+        """Fallback fact extraction for common repository conventions."""
+        lowered = transcript.lower()
+        heuristic_facts: list[str] = []
+
+        if "yarn workspace" in lowered or "yarn workspaces" in lowered:
+            heuristic_facts.append("This project uses Yarn workspaces; prefer yarn over npm for package scripts.")
+        if "pnpm workspace" in lowered or "pnpm-workspace.yaml" in lowered:
+            heuristic_facts.append("This project uses pnpm workspaces; prefer pnpm commands for package scripts.")
+        if "package-lock.json" in lowered or "npm run" in lowered:
+            heuristic_facts.append("Use npm commands for package scripts unless the repository shows another package manager.")
+        if "poetry" in lowered or "poetry.lock" in lowered:
+            heuristic_facts.append("This Python project uses Poetry for dependency and script management.")
+        if "uv run" in lowered or "[tool.uv]" in lowered:
+            heuristic_facts.append("This project uses uv for Python dependency management and command execution.")
+        if "pytest" in lowered:
+            heuristic_facts.append("Use pytest for this repository's Python test runs.")
+
+        return heuristic_facts
+
+    def _extract_json_object(self, content: str) -> dict[str, Any]:
+        """Parse the first JSON object found in model output."""
+        stripped_content = content.strip()
+        if not stripped_content:
+            return {}
+
+        try:
+            parsed = json.loads(stripped_content)
+            if isinstance(parsed, dict):
+                return parsed
+        except json.JSONDecodeError:
+            pass
+
+        match = re.search(r"\{.*\}", stripped_content, re.DOTALL)
+        if not match:
+            return {}
+
+        try:
+            parsed = json.loads(match.group(0))
+        except json.JSONDecodeError:
+            return {}
+        return parsed if isinstance(parsed, dict) else {}
+
+    def _queue_project_memory_update(self, user_input: str, new_messages: list[Any]) -> None:
+        """Update the project memory in a background thread after a successful turn."""
+        final_ai_messages = [
+            message
+            for message in new_messages
+            if getattr(message, "type", None) == "ai" and not getattr(message, "tool_calls", None)
+        ]
+        if not final_ai_messages:
+            return
+
+        final_answer = getattr(final_ai_messages[-1], "content", "")
+        if not str(final_answer).strip():
+            return
+
+        transcript_parts = [f"User request:\n{user_input}"]
+        for message in new_messages:
+            message_type = getattr(message, "type", type(message).__name__)
+            message_content = getattr(message, "content", "")
+            if not message_content:
+                continue
+            transcript_parts.append(f"{message_type.upper()}:\n{message_content}")
+
+        transcript = "\n\n".join(transcript_parts)
+
+        def _persist_memory() -> None:
+            try:
+                facts = self._extract_project_facts(transcript)
+                stored_count = self.project_memory.upsert_facts(facts, transcript)
+                logger.info("Stored %s project memory facts in %s", stored_count, self.project_memory.db_path)
+            except Exception as e:
+                logger.warning(f"Failed to persist project memory: {e}")
+
+        threading.Thread(target=_persist_memory, daemon=True).start()
 
     def _setup_keybindings(self) -> None:
         """Setup custom key bindings for file suggestions."""
@@ -508,6 +741,8 @@ Your operations are restricted to: {cwd}
             
             processed_message = self._process_message_with_files(last_msg.content)
             logger.info(f"Processed message length: {len(processed_message)}")
+            active_user_query = self._extract_active_user_query(state["messages"])
+            effective_system_prompt = self._build_system_prompt() + self._build_memory_context(active_user_query)
             
             # Replace the last message with processed content
             # Only replace if it's a HumanMessage, otherwise keep as is
@@ -521,7 +756,9 @@ Your operations are restricted to: {cwd}
             
             # Prepend system message if not already present
             if not messages or not isinstance(messages[0], SystemMessage):
-                messages = [SystemMessage(content=self.system_prompt)] + messages
+                messages = [SystemMessage(content=effective_system_prompt)] + messages
+            else:
+                messages = [SystemMessage(content=effective_system_prompt)] + messages[1:]
             
             logger.info(f"Messages prepared for model: {len(messages)}")
             
@@ -919,6 +1156,8 @@ Your operations are restricted to: {cwd}
                                 padding=(1, 2),
                             )
                         )
+
+                self._queue_project_memory_update(user_input, new_messages)
 
             except KeyboardInterrupt:
                 self.console.print("\n[bold]Use 'exit' or 'quit' to leave[/bold]")
