@@ -693,6 +693,57 @@ Your operations are restricted to: {cwd}
 
         threading.Thread(target=_persist_memory, daemon=True).start()
 
+    def _attach_prompt_token_metadata(self, messages: list[Any], response: Any) -> None:
+        """Attach prompt token accounting to a model response for UI status rendering."""
+        try:
+            full_prompt_tokens = self.base_model.get_num_tokens_from_messages(messages)
+        except Exception as e:
+            logger.debug(f"Could not count prompt tokens for status line: {e}")
+            return
+
+        response_metadata = getattr(response, "response_metadata", None)
+        if not isinstance(response_metadata, dict):
+            response_metadata = {}
+            setattr(response, "response_metadata", response_metadata)
+
+        response_metadata["full_prompt_tokens"] = full_prompt_tokens
+
+        prompt_eval_count = response_metadata.get("prompt_eval_count")
+        if isinstance(prompt_eval_count, int):
+            response_metadata["cached_prompt_tokens"] = max(full_prompt_tokens - prompt_eval_count, 0)
+
+    def _format_token_status_line(self, message: Any) -> str:
+        """Format a status line showing token usage and cache reuse for a response."""
+        response_metadata = getattr(message, "response_metadata", None) or {}
+        usage_metadata = getattr(message, "usage_metadata", None) or {}
+
+        prompt_eval_tokens = response_metadata.get("prompt_eval_count")
+        if not isinstance(prompt_eval_tokens, int):
+            prompt_eval_tokens = usage_metadata.get("input_tokens")
+
+        output_tokens = response_metadata.get("eval_count")
+        if not isinstance(output_tokens, int):
+            output_tokens = usage_metadata.get("output_tokens")
+
+        cached_prompt_tokens = response_metadata.get("cached_prompt_tokens")
+        if not isinstance(cached_prompt_tokens, int):
+            full_prompt_tokens = response_metadata.get("full_prompt_tokens")
+            if isinstance(full_prompt_tokens, int) and isinstance(prompt_eval_tokens, int):
+                cached_prompt_tokens = max(full_prompt_tokens - prompt_eval_tokens, 0)
+
+        parts = []
+        if isinstance(cached_prompt_tokens, int):
+            parts.append(f"cached prompt tokens: {cached_prompt_tokens}")
+        if isinstance(prompt_eval_tokens, int):
+            parts.append(f"evaluated prompt tokens: {prompt_eval_tokens}")
+        if isinstance(output_tokens, int):
+            parts.append(f"output tokens: {output_tokens}")
+
+        if not parts:
+            return ""
+
+        return f"[dim]Status: {' | '.join(parts)}[/dim]"
+
     def _setup_keybindings(self) -> None:
         """Setup custom key bindings for file suggestions."""
         kb = KeyBindings()
@@ -764,6 +815,7 @@ Your operations are restricted to: {cwd}
             
             # Invoke model with messages (system prompt is now in the messages)
             response = self.model.invoke(messages)
+            self._attach_prompt_token_metadata(messages, response)
             logger.info(f"Model response type: {type(response)}")
             logger.info(f"Model response: {response}")
             if hasattr(response, "tool_calls"):
@@ -1123,6 +1175,9 @@ Your operations are restricted to: {cwd}
                                         padding=(1, 2),
                                     )
                                 )
+                            token_status_line = self._format_token_status_line(msg)
+                            if token_status_line:
+                                self.console.print(token_status_line)
                             # Show tool calls
                             for tool_call in msg.tool_calls:
                                 if isinstance(tool_call, dict):
@@ -1143,6 +1198,9 @@ Your operations are restricted to: {cwd}
                         elif hasattr(msg, "content") and msg.content:
                             logger.info(f"AI message with content: {msg.content[:100]}")
                             self.display_message(msg.content, sender="assistant")
+                            token_status_line = self._format_token_status_line(msg)
+                            if token_status_line:
+                                self.console.print(token_status_line)
                     elif msg.type == "tool":
                         logger.info(f"Tool message: {msg.content[:100]}")
                         # Show tool results
