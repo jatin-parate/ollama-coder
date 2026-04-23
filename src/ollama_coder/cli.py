@@ -4,17 +4,20 @@ import json
 import logging
 import os
 import re
+import sqlite3
 import subprocess
 import sys
+import threading
+import time
 from pathlib import Path
-from typing import Annotated, List, Optional, Sequence, Tuple
+from typing import Any, List, Tuple
 
+from langchain_core.caches import BaseCache
+from langchain_core.messages import trim_messages
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, MessagesState, StateGraph
-from langgraph.prebuilt import ToolNode
 from prompt_toolkit import PromptSession
-from prompt_toolkit.application import run_in_terminal
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
@@ -39,6 +42,25 @@ logger = logging.getLogger(__name__)
 logging.getLogger('httpcore').setLevel(logging.WARNING)
 logging.getLogger('httpx').setLevel(logging.WARNING)
 logging.getLogger('asyncio').setLevel(logging.WARNING)
+
+
+class SessionResponseCache(BaseCache):
+    """Simple in-memory cache for exact prompt and model matches."""
+
+    def __init__(self) -> None:
+        self._cache: dict[tuple[str, str], Any] = {}
+
+    def lookup(self, prompt: str, llm_string: str) -> Any:
+        """Return a cached generation list for an exact request match."""
+        return self._cache.get((prompt, llm_string))
+
+    def update(self, prompt: str, llm_string: str, return_val: Any) -> None:
+        """Store generation results for later exact-match reuse."""
+        self._cache[(prompt, llm_string)] = return_val
+
+    def clear(self, **kwargs: Any) -> None:
+        """Clear cached generations."""
+        self._cache.clear()
 
 
 class BashTool(BaseModel):
@@ -165,8 +187,8 @@ class WriteFileTool(BaseModel):
                 
                 if self.old_string:
                     return (
-                        f"Error: Cannot use old_string when appending. "
-                        f"Leave old_string empty when append=True."
+                        "Error: Cannot use old_string when appending. "
+                        "Leave old_string empty when append=True."
                     )
                 
                 # Read the current file
@@ -281,25 +303,152 @@ class WriteFileTool(BaseModel):
         }
 
 
+class ProjectMemoryStore:
+    """Persist and retrieve durable project facts from a local SQLite database."""
+
+    def __init__(self, project_root: Path) -> None:
+        self.project_root = project_root.resolve()
+        self.db_path = self.project_root / "memroy.db"
+        self._initialize()
+
+    def _initialize(self) -> None:
+        """Create the database schema if it does not exist."""
+        with sqlite3.connect(self.db_path) as connection:
+            connection.execute(
+                """
+                CREATE TABLE IF NOT EXISTS facts (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    fact TEXT NOT NULL UNIQUE,
+                    keywords TEXT NOT NULL,
+                    source_context TEXT,
+                    created_at REAL NOT NULL,
+                    updated_at REAL NOT NULL
+                )
+                """
+            )
+            connection.commit()
+
+    def search(self, query: str, limit: int = 6) -> list[str]:
+        """Return the most relevant stored facts for a query."""
+        normalized_query = query.strip()
+        with sqlite3.connect(self.db_path) as connection:
+            rows = connection.execute(
+                "SELECT fact, keywords, updated_at FROM facts ORDER BY updated_at DESC"
+            ).fetchall()
+
+        if not normalized_query:
+            return [fact for fact, _, _ in rows[:limit]]
+
+        query_terms = self._tokenize(normalized_query)
+
+        ranked_rows: list[tuple[int, float, str]] = []
+        recent_facts: list[str] = []
+        for fact, keywords, updated_at in rows:
+            recent_facts.append(fact)
+            keyword_terms = set(filter(None, keywords.split(" ")))
+            overlap = len(query_terms & keyword_terms)
+            if overlap == 0:
+                continue
+            ranked_rows.append((overlap, updated_at, fact))
+
+        ranked_rows.sort(key=lambda item: (item[0], item[1]), reverse=True)
+        selected_facts = [fact for _, _, fact in ranked_rows[:limit]]
+        for fact in recent_facts:
+            if len(selected_facts) >= limit:
+                break
+            if fact not in selected_facts:
+                selected_facts.append(fact)
+        return selected_facts
+
+    def upsert_facts(self, facts: list[str], source_context: str) -> int:
+        """Insert new facts or refresh timestamps for existing facts."""
+        cleaned_facts = []
+        seen_facts: set[str] = set()
+        for fact in facts:
+            normalized_fact = self._normalize_fact(fact)
+            if not normalized_fact or normalized_fact in seen_facts:
+                continue
+            seen_facts.add(normalized_fact)
+            cleaned_facts.append(normalized_fact)
+
+        if not cleaned_facts:
+            return 0
+
+        now = time.time()
+        with sqlite3.connect(self.db_path) as connection:
+            for fact in cleaned_facts:
+                keywords = " ".join(sorted(self._tokenize(fact)))
+                connection.execute(
+                    """
+                    INSERT INTO facts (fact, keywords, source_context, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?)
+                    ON CONFLICT(fact) DO UPDATE SET
+                        keywords = excluded.keywords,
+                        source_context = excluded.source_context,
+                        updated_at = excluded.updated_at
+                    """,
+                    (fact, keywords, source_context[:2000], now, now),
+                )
+            connection.commit()
+
+        return len(cleaned_facts)
+
+    def _normalize_fact(self, fact: str) -> str:
+        """Normalize fact strings before persisting them."""
+        normalized_fact = re.sub(r"\s+", " ", fact).strip()
+        if len(normalized_fact) < 12:
+            return ""
+        return normalized_fact[:400]
+
+    def _tokenize(self, text: str) -> set[str]:
+        """Tokenize text for simple keyword matching."""
+        return {
+            token
+            for token in re.findall(r"[a-z0-9][a-z0-9._-]{1,}", text.lower())
+            if token not in {"that", "this", "with", "from", "into", "should", "would", "there", "their", "about"}
+        }
+
+
 class OllamaChatCLI:
     """A terminal chat application using Ollama."""
 
     def __init__(self, model_id: str = None):
         """Initialize the chat application."""
         self.model_id = model_id or os.environ.get("OLLAMA_MODEL", "llama3.2")
+        self.temperature = self._get_float_env("OLLAMA_TEMPERATURE", 0.0)
+        self.enable_exact_cache = os.environ.get("OLLAMA_EXACT_CACHE", "1") != "0"
+        self.keep_alive = os.environ.get("OLLAMA_KEEP_ALIVE", "-1")
+        self.num_ctx = self._get_int_env("OLLAMA_NUM_CTX", 4096)
+        self.history_token_budget = min(
+            self._get_int_env("OLLAMA_HISTORY_TOKENS", max(1024, int(self.num_ctx * 0.6))),
+            self.num_ctx,
+        )
+
+        if self.enable_exact_cache and self.temperature != 0:
+            logger.warning(
+                "Disabling exact response cache because OLLAMA_TEMPERATURE=%s is non-deterministic.",
+                self.temperature,
+            )
+            self.enable_exact_cache = False
+
+        self.response_cache = SessionResponseCache() if self.enable_exact_cache else None
         self.console = Console()
         self.memory = MemorySaver()
         self.chat_history: List[Tuple[str, str]] = []
-        self.current_dir = Path.cwd()
+        self.project_root = Path.cwd().resolve()
+        self.current_dir = self.project_root
+        self.project_memory = ProjectMemoryStore(self.project_root)
 
-        # System prompt for the agent
-        self.system_prompt = self._build_system_prompt()
-
-        # Initialize the LangChain model with tools
-        self.model = ChatOllama(
+        # Keep the model resident and cap the dynamic suffix so Ollama can reuse
+        # the same prompt prefix across turns.
+        self.base_model = ChatOllama(
             model=self.model_id,
-            temperature=0.7,
-        ).bind_tools([BashTool, ReadFileTool, WriteFileTool])
+            temperature=self.temperature,
+            cache=self.response_cache,
+            keep_alive=self.keep_alive,
+            num_ctx=self.num_ctx,
+        )
+        self.model = self.base_model.bind_tools([BashTool, ReadFileTool, WriteFileTool])
 
         # Build the LangGraph workflow
         self.workflow = self._build_workflow()
@@ -309,6 +458,62 @@ class OllamaChatCLI:
         self.session = PromptSession()
         self.completer = FileCompleter(self)
         self._setup_keybindings()
+
+    def _get_int_env(self, env_name: str, default: int) -> int:
+        """Parse integer environment variables with a safe fallback."""
+        raw_value = os.environ.get(env_name)
+        if raw_value is None:
+            return default
+
+        try:
+            parsed_value = int(raw_value)
+        except ValueError:
+            logger.warning(f"Invalid integer for {env_name}: {raw_value!r}. Using default {default}.")
+            return default
+
+        if parsed_value <= 0:
+            logger.warning(f"Non-positive integer for {env_name}: {parsed_value}. Using default {default}.")
+            return default
+
+        return parsed_value
+
+    def _get_float_env(self, env_name: str, default: float) -> float:
+        """Parse float environment variables with a safe fallback."""
+        raw_value = os.environ.get(env_name)
+        if raw_value is None:
+            return default
+
+        try:
+            return float(raw_value)
+        except ValueError:
+            logger.warning(f"Invalid float for {env_name}: {raw_value!r}. Using default {default}.")
+            return default
+
+    def _trim_messages_for_context(self, messages: list[Any]) -> list[Any]:
+        """Trim dynamic conversation history to preserve a stable cached prefix."""
+        if len(messages) <= 1:
+            return messages
+
+        try:
+            trimmed_messages = trim_messages(
+                messages,
+                max_tokens=self.history_token_budget,
+                token_counter=self.base_model,
+                strategy="last",
+                start_on="human",
+                include_system=False,
+            )
+        except Exception as e:
+            logger.warning(f"Falling back to untrimmed message history: {e}")
+            return messages
+
+        logger.info(
+            "Trimmed message history from %s to %s messages using a %s-token budget",
+            len(messages),
+            len(trimmed_messages),
+            self.history_token_budget,
+        )
+        return trimmed_messages
 
     def _build_system_prompt(self) -> str:
         """Build a comprehensive system prompt for the agent."""
@@ -356,12 +561,188 @@ When given a complex task (like building a React component, refactoring code, or
 ## Current Working Directory
 Your operations are restricted to: {cwd}
 
+## Project Memory
+- Before making decisions, consider any stored project facts that are included in the system prompt.
+- Treat stored facts as durable project conventions unless the current repository state or the user explicitly contradicts them.
+- When a stored fact says to prefer one tool or workflow, follow it consistently during the task.
+
 ## Important Notes
 - You can only create/edit files within the current working directory
 - Always verify file paths are correct before making changes
 - Use the tools iteratively - read, plan, execute, verify
 - For complex tasks, break them into smaller, manageable steps
 - Communicate your progress and reasoning clearly"""
+
+    def _build_memory_context(self, query: str) -> str:
+        """Build the project-memory section for the current task."""
+        relevant_facts = self.project_memory.search(query)
+        if not relevant_facts:
+            return "\n\n## Stored Project Facts\n- No stored project facts were found for this task."
+
+        facts_text = "\n".join(f"- {fact}" for fact in relevant_facts)
+        return f"\n\n## Stored Project Facts\n{facts_text}"
+
+    def _extract_active_user_query(self, messages: list[Any]) -> str:
+        """Return the most recent human message to drive memory retrieval."""
+        for message in reversed(messages):
+            if getattr(message, "type", None) == "human" and hasattr(message, "content"):
+                return str(message.content)
+        return ""
+
+    def _extract_project_facts(self, transcript: str) -> list[str]:
+        """Extract durable project facts from a finished turn."""
+        extraction_prompt = (
+            "Extract durable, project-specific facts from this completed coding task. "
+            "Only keep facts that will help future tasks in the same repository, such as package managers, "
+            "workspace tools, build commands, test commands, frameworks, important directories, or coding conventions. "
+            "Ignore transient details. Return strict JSON with shape {\"facts\": [\"fact 1\", \"fact 2\"]}. "
+            "Keep each fact under 140 characters and phrase it as an instruction or durable repository fact.\n\n"
+            f"Transcript:\n{transcript[:12000]}"
+        )
+
+        try:
+            extraction_response = self.base_model.invoke(extraction_prompt)
+            content = getattr(extraction_response, "content", "")
+            if isinstance(content, list):
+                content = "\n".join(str(item) for item in content)
+            payload = self._extract_json_object(str(content))
+            facts = payload.get("facts", []) if isinstance(payload, dict) else []
+            if isinstance(facts, list):
+                normalized_facts = [str(fact).strip() for fact in facts if str(fact).strip()]
+                if normalized_facts:
+                    return normalized_facts
+        except Exception as e:
+            logger.warning(f"Project memory extraction failed, using heuristic fallback: {e}")
+
+        return self._extract_project_facts_heuristic(transcript)
+
+    def _extract_project_facts_heuristic(self, transcript: str) -> list[str]:
+        """Fallback fact extraction for common repository conventions."""
+        lowered = transcript.lower()
+        heuristic_facts: list[str] = []
+
+        if "yarn workspace" in lowered or "yarn workspaces" in lowered:
+            heuristic_facts.append("This project uses Yarn workspaces; prefer yarn over npm for package scripts.")
+        if "pnpm workspace" in lowered or "pnpm-workspace.yaml" in lowered:
+            heuristic_facts.append("This project uses pnpm workspaces; prefer pnpm commands for package scripts.")
+        if "package-lock.json" in lowered or "npm run" in lowered:
+            heuristic_facts.append("Use npm commands for package scripts unless the repository shows another package manager.")
+        if "poetry" in lowered or "poetry.lock" in lowered:
+            heuristic_facts.append("This Python project uses Poetry for dependency and script management.")
+        if "uv run" in lowered or "[tool.uv]" in lowered:
+            heuristic_facts.append("This project uses uv for Python dependency management and command execution.")
+        if "pytest" in lowered:
+            heuristic_facts.append("Use pytest for this repository's Python test runs.")
+
+        return heuristic_facts
+
+    def _extract_json_object(self, content: str) -> dict[str, Any]:
+        """Parse the first JSON object found in model output."""
+        stripped_content = content.strip()
+        if not stripped_content:
+            return {}
+
+        try:
+            parsed = json.loads(stripped_content)
+            if isinstance(parsed, dict):
+                return parsed
+        except json.JSONDecodeError:
+            pass
+
+        match = re.search(r"\{.*\}", stripped_content, re.DOTALL)
+        if not match:
+            return {}
+
+        try:
+            parsed = json.loads(match.group(0))
+        except json.JSONDecodeError:
+            return {}
+        return parsed if isinstance(parsed, dict) else {}
+
+    def _queue_project_memory_update(self, user_input: str, new_messages: list[Any]) -> None:
+        """Update the project memory in a background thread after a successful turn."""
+        final_ai_messages = [
+            message
+            for message in new_messages
+            if getattr(message, "type", None) == "ai" and not getattr(message, "tool_calls", None)
+        ]
+        if not final_ai_messages:
+            return
+
+        final_answer = getattr(final_ai_messages[-1], "content", "")
+        if not str(final_answer).strip():
+            return
+
+        transcript_parts = [f"User request:\n{user_input}"]
+        for message in new_messages:
+            message_type = getattr(message, "type", type(message).__name__)
+            message_content = getattr(message, "content", "")
+            if not message_content:
+                continue
+            transcript_parts.append(f"{message_type.upper()}:\n{message_content}")
+
+        transcript = "\n\n".join(transcript_parts)
+
+        def _persist_memory() -> None:
+            try:
+                facts = self._extract_project_facts(transcript)
+                stored_count = self.project_memory.upsert_facts(facts, transcript)
+                logger.info("Stored %s project memory facts in %s", stored_count, self.project_memory.db_path)
+            except Exception as e:
+                logger.warning(f"Failed to persist project memory: {e}")
+
+        threading.Thread(target=_persist_memory, daemon=True).start()
+
+    def _attach_prompt_token_metadata(self, messages: list[Any], response: Any) -> None:
+        """Attach prompt token accounting to a model response for UI status rendering."""
+        try:
+            full_prompt_tokens = self.base_model.get_num_tokens_from_messages(messages)
+        except Exception as e:
+            logger.debug(f"Could not count prompt tokens for status line: {e}")
+            return
+
+        response_metadata = getattr(response, "response_metadata", None)
+        if not isinstance(response_metadata, dict):
+            response_metadata = {}
+            setattr(response, "response_metadata", response_metadata)
+
+        response_metadata["full_prompt_tokens"] = full_prompt_tokens
+
+        prompt_eval_count = response_metadata.get("prompt_eval_count")
+        if isinstance(prompt_eval_count, int):
+            response_metadata["cached_prompt_tokens"] = max(full_prompt_tokens - prompt_eval_count, 0)
+
+    def _format_token_status_line(self, message: Any) -> str:
+        """Format a status line showing token usage and cache reuse for a response."""
+        response_metadata = getattr(message, "response_metadata", None) or {}
+        usage_metadata = getattr(message, "usage_metadata", None) or {}
+
+        prompt_eval_tokens = response_metadata.get("prompt_eval_count")
+        if not isinstance(prompt_eval_tokens, int):
+            prompt_eval_tokens = usage_metadata.get("input_tokens")
+
+        output_tokens = response_metadata.get("eval_count")
+        if not isinstance(output_tokens, int):
+            output_tokens = usage_metadata.get("output_tokens")
+
+        cached_prompt_tokens = response_metadata.get("cached_prompt_tokens")
+        if not isinstance(cached_prompt_tokens, int):
+            full_prompt_tokens = response_metadata.get("full_prompt_tokens")
+            if isinstance(full_prompt_tokens, int) and isinstance(prompt_eval_tokens, int):
+                cached_prompt_tokens = max(full_prompt_tokens - prompt_eval_tokens, 0)
+
+        parts = []
+        if isinstance(cached_prompt_tokens, int):
+            parts.append(f"cached prompt tokens: {cached_prompt_tokens}")
+        if isinstance(prompt_eval_tokens, int):
+            parts.append(f"evaluated prompt tokens: {prompt_eval_tokens}")
+        if isinstance(output_tokens, int):
+            parts.append(f"output tokens: {output_tokens}")
+
+        if not parts:
+            return ""
+
+        return f"[dim]Status: {' | '.join(parts)}[/dim]"
 
     def _setup_keybindings(self) -> None:
         """Setup custom key bindings for file suggestions."""
@@ -399,7 +780,7 @@ Your operations are restricted to: {cwd}
         # Define the chat node
         def chat_node(state: MessagesState):
             """Process user message and get model response."""
-            from langchain_core.messages import HumanMessage, ToolMessage, SystemMessage
+            from langchain_core.messages import HumanMessage, SystemMessage
             
             logger.info("=== CHAT NODE START ===")
             logger.info(f"State messages count: {len(state['messages'])}")
@@ -411,6 +792,8 @@ Your operations are restricted to: {cwd}
             
             processed_message = self._process_message_with_files(last_msg.content)
             logger.info(f"Processed message length: {len(processed_message)}")
+            active_user_query = self._extract_active_user_query(state["messages"])
+            effective_system_prompt = self._build_system_prompt() + self._build_memory_context(active_user_query)
             
             # Replace the last message with processed content
             # Only replace if it's a HumanMessage, otherwise keep as is
@@ -419,15 +802,20 @@ Your operations are restricted to: {cwd}
             else:
                 # For ToolMessage or other types, keep as is
                 messages = state["messages"]
+
+            messages = self._trim_messages_for_context(messages)
             
             # Prepend system message if not already present
             if not messages or not isinstance(messages[0], SystemMessage):
-                messages = [SystemMessage(content=self.system_prompt)] + messages
+                messages = [SystemMessage(content=effective_system_prompt)] + messages
+            else:
+                messages = [SystemMessage(content=effective_system_prompt)] + messages[1:]
             
             logger.info(f"Messages prepared for model: {len(messages)}")
             
             # Invoke model with messages (system prompt is now in the messages)
             response = self.model.invoke(messages)
+            self._attach_prompt_token_metadata(messages, response)
             logger.info(f"Model response type: {type(response)}")
             logger.info(f"Model response: {response}")
             if hasattr(response, "tool_calls"):
@@ -441,6 +829,12 @@ Your operations are restricted to: {cwd}
             """Execute tools requested by the model."""
             from langchain_core.messages import AIMessage, ToolMessage
             import uuid
+
+            def _extract_tool_call_field(tool_call: Any, key: str, default: Any = None) -> Any:
+                """Get a field from a tool call represented as dict or object."""
+                if isinstance(tool_call, dict):
+                    return tool_call.get(key, default)
+                return getattr(tool_call, key, default)
             
             logger.info("=== TOOL NODE START ===")
             logger.info(f"State messages count: {len(state['messages'])}")
@@ -466,35 +860,11 @@ Your operations are restricted to: {cwd}
                 tool_results = []
                 for tool_call in last_message.tool_calls:
                     logger.info(f"Processing tool call: {tool_call}")
-                    
-                    # Try to get the tool_call_id from different sources
-                    tool_call_id = None
-                    tool_name = None
-                    args = {}
-                    
-                    # Try as dict
-                    if isinstance(tool_call, dict):
-                        logger.info("Tool call is dict")
-                        tool_call_id = tool_call.get("id")
-                        tool_name = tool_call.get("name")
-                        args = tool_call.get("args", {})
-                        logger.info(f"Dict extraction - id: {tool_call_id}, name: {tool_name}, args: {args}")
-                    # Try as object with attributes
-                    elif hasattr(tool_call, "id"):
-                        logger.info("Tool call has id attribute")
-                        tool_call_id = tool_call.id
-                        tool_name = getattr(tool_call, "name", None)
-                        args = getattr(tool_call, "args", {})
-                        logger.info(f"Attribute extraction - id: {tool_call_id}, name: {tool_name}, args: {args}")
-                    # Try as object with __dict__
-                    elif hasattr(tool_call, "__dict__"):
-                        logger.info("Tool call has __dict__")
-                        tool_call_id = tool_call.__dict__.get("id")
-                        tool_name = tool_call.__dict__.get("name", None)
-                        args = tool_call.__dict__.get("args", {})
-                        logger.info(f"__dict__ extraction - id: {tool_call_id}, name: {tool_name}, args: {args}")
-                    else:
-                        logger.warning("Could not extract tool call info")
+
+                    tool_call_id = _extract_tool_call_field(tool_call, "id")
+                    tool_name = _extract_tool_call_field(tool_call, "name")
+                    args = _extract_tool_call_field(tool_call, "args", {})
+                    logger.info(f"Extracted tool call - id: {tool_call_id}, name: {tool_name}, args: {args}")
                     
                     if tool_call_id is None:
                         logger.warning("tool_call_id is None, generating UUID")
@@ -531,11 +901,18 @@ Your operations are restricted to: {cwd}
                         file_path = args.get("file_path", "")
                         old_string = args.get("old_string", "")
                         new_string = args.get("new_string", "")
+                        append = args.get("append", False)
                         logger.info(f"File path: {file_path}")
                         logger.info(f"Old string length: {len(old_string)}")
                         logger.info(f"New string length: {len(new_string)}")
-                        
-                        tool = WriteFileTool(file_path=file_path, old_string=old_string, new_string=new_string)
+                        logger.info(f"Append mode: {append}")
+
+                        tool = WriteFileTool(
+                            file_path=file_path,
+                            old_string=old_string,
+                            new_string=new_string,
+                            append=append,
+                        )
                         result = tool.execute()
                         logger.info(f"Tool result: {result[:200]}")
                     
@@ -548,7 +925,7 @@ Your operations are restricted to: {cwd}
                             content=result,
                             tool_call_id=tool_call_id,
                         )
-                        logger.info(f"Created ToolMessage")
+                        logger.info("Created ToolMessage")
                         tool_results.append(tool_msg)
                 
                 logger.info(f"Tool results count: {len(tool_results)}")
@@ -571,7 +948,7 @@ Your operations are restricted to: {cwd}
             """Determine if we should continue to tools or end."""
             messages = state["messages"]
             last_message = messages[-1]
-            if last_message.tool_calls:
+            if getattr(last_message, "tool_calls", None):
                 return "tools"
             return END
 
@@ -703,6 +1080,10 @@ Your operations are restricted to: {cwd}
                 Text.from_markup(
                     f"[bold]Ollama Coder CLI[/bold]\n"
                     f"Model: [cyan]{self.model_id}[/cyan]\n"
+                    f"Temperature: [cyan]{self.temperature}[/cyan]\n"
+                    f"Context window: [cyan]{self.num_ctx}[/cyan] tokens\n"
+                    f"Keep alive: [cyan]{self.keep_alive}[/cyan]\n"
+                    f"Exact cache: [cyan]{'on' if self.enable_exact_cache else 'off'}[/cyan]\n"
                     f"Type 'exit' or 'quit' to leave\n"
                     f"Type 'clear' to reset conversation\n"
                     f"Use '@' + Tab to browse files in current directory\n"
@@ -714,8 +1095,8 @@ Your operations are restricted to: {cwd}
         self.console.print()
 
         # Conversation state
-        config = {"configurable": {"thread_id": "1"}}
-        messages = []
+        thread_id = "1"
+        config = {"configurable": {"thread_id": thread_id}}
 
         while True:
             try:
@@ -735,7 +1116,8 @@ Your operations are restricted to: {cwd}
 
                 # Handle clear command
                 if user_input.lower() == "clear":
-                    messages = []
+                    thread_id = str(int(thread_id) + 1)
+                    config = {"configurable": {"thread_id": thread_id}}
                     self.console.clear()
                     self.console.print(
                         Panel(
@@ -752,20 +1134,30 @@ Your operations are restricted to: {cwd}
                     continue
 
                 # Add user message
-                messages.append(("user", user_input))
                 self.display_message(user_input, sender="user")
 
+                # Get previous message count from graph state to avoid re-printing old messages
+                previous_count = 0
+                try:
+                    state_snapshot = self.app.get_state(config)
+                    existing_messages = state_snapshot.values.get("messages", [])
+                    previous_count = len(existing_messages)
+                except Exception as e:
+                    logger.debug(f"Could not read previous state: {e}")
+
                 # Get model response
-                response = self.app.invoke(
-                    {"messages": messages},
-                    config=config,
-                )
+                with self.console.status("[bold yellow]Thinking...[/bold yellow]", spinner="dots"):
+                    response = self.app.invoke(
+                        {"messages": [("user", user_input)]},
+                        config=config,
+                    )
 
                 logger.info(f"Response from app.invoke: {response}")
                 logger.info(f"Response messages count: {len(response['messages'])}")
 
-                # Process all messages in response
-                for msg in response["messages"]:
+                # Process only the new messages from this turn
+                new_messages = response["messages"][previous_count:]
+                for msg in new_messages:
                     logger.info(f"Processing message: type={type(msg)}, content_preview={str(msg)[:100]}")
                     
                     if msg.type == "ai":
@@ -783,10 +1175,17 @@ Your operations are restricted to: {cwd}
                                         padding=(1, 2),
                                     )
                                 )
+                            token_status_line = self._format_token_status_line(msg)
+                            if token_status_line:
+                                self.console.print(token_status_line)
                             # Show tool calls
                             for tool_call in msg.tool_calls:
-                                tool_name = tool_call.get('name', 'unknown')
-                                args = tool_call.get('args', {})
+                                if isinstance(tool_call, dict):
+                                    tool_name = tool_call.get("name", "unknown")
+                                    args = tool_call.get("args", {})
+                                else:
+                                    tool_name = getattr(tool_call, "name", "unknown")
+                                    args = getattr(tool_call, "args", {})
                                 self.console.print(
                                     Panel(
                                         f"[bold]{tool_name}[/bold]\n{json.dumps(args, indent=2)}",
@@ -799,7 +1198,9 @@ Your operations are restricted to: {cwd}
                         elif hasattr(msg, "content") and msg.content:
                             logger.info(f"AI message with content: {msg.content[:100]}")
                             self.display_message(msg.content, sender="assistant")
-                            messages.append(("assistant", msg.content))
+                            token_status_line = self._format_token_status_line(msg)
+                            if token_status_line:
+                                self.console.print(token_status_line)
                     elif msg.type == "tool":
                         logger.info(f"Tool message: {msg.content[:100]}")
                         # Show tool results
@@ -813,10 +1214,8 @@ Your operations are restricted to: {cwd}
                                 padding=(1, 2),
                             )
                         )
-                        messages.append(("tool", msg.content))
-                    elif msg.type == "human":
-                        logger.info(f"Human message: {msg.content[:100]}")
-                        messages.append(("user", msg.content))
+
+                self._queue_project_memory_update(user_input, new_messages)
 
             except KeyboardInterrupt:
                 self.console.print("\n[bold]Use 'exit' or 'quit' to leave[/bold]")
