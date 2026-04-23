@@ -7,14 +7,12 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Annotated, List, Optional, Sequence, Tuple
+from typing import Any, List, Tuple
 
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, MessagesState, StateGraph
-from langgraph.prebuilt import ToolNode
 from prompt_toolkit import PromptSession
-from prompt_toolkit.application import run_in_terminal
 from prompt_toolkit.completion import Completer, Completion
 from prompt_toolkit.key_binding import KeyBindings
 from prompt_toolkit.keys import Keys
@@ -165,8 +163,8 @@ class WriteFileTool(BaseModel):
                 
                 if self.old_string:
                     return (
-                        f"Error: Cannot use old_string when appending. "
-                        f"Leave old_string empty when append=True."
+                        "Error: Cannot use old_string when appending. "
+                        "Leave old_string empty when append=True."
                     )
                 
                 # Read the current file
@@ -399,7 +397,7 @@ Your operations are restricted to: {cwd}
         # Define the chat node
         def chat_node(state: MessagesState):
             """Process user message and get model response."""
-            from langchain_core.messages import HumanMessage, ToolMessage, SystemMessage
+            from langchain_core.messages import HumanMessage, SystemMessage
             
             logger.info("=== CHAT NODE START ===")
             logger.info(f"State messages count: {len(state['messages'])}")
@@ -441,6 +439,12 @@ Your operations are restricted to: {cwd}
             """Execute tools requested by the model."""
             from langchain_core.messages import AIMessage, ToolMessage
             import uuid
+
+            def _extract_tool_call_field(tool_call: Any, key: str, default: Any = None) -> Any:
+                """Get a field from a tool call represented as dict or object."""
+                if isinstance(tool_call, dict):
+                    return tool_call.get(key, default)
+                return getattr(tool_call, key, default)
             
             logger.info("=== TOOL NODE START ===")
             logger.info(f"State messages count: {len(state['messages'])}")
@@ -466,35 +470,11 @@ Your operations are restricted to: {cwd}
                 tool_results = []
                 for tool_call in last_message.tool_calls:
                     logger.info(f"Processing tool call: {tool_call}")
-                    
-                    # Try to get the tool_call_id from different sources
-                    tool_call_id = None
-                    tool_name = None
-                    args = {}
-                    
-                    # Try as dict
-                    if isinstance(tool_call, dict):
-                        logger.info("Tool call is dict")
-                        tool_call_id = tool_call.get("id")
-                        tool_name = tool_call.get("name")
-                        args = tool_call.get("args", {})
-                        logger.info(f"Dict extraction - id: {tool_call_id}, name: {tool_name}, args: {args}")
-                    # Try as object with attributes
-                    elif hasattr(tool_call, "id"):
-                        logger.info("Tool call has id attribute")
-                        tool_call_id = tool_call.id
-                        tool_name = getattr(tool_call, "name", None)
-                        args = getattr(tool_call, "args", {})
-                        logger.info(f"Attribute extraction - id: {tool_call_id}, name: {tool_name}, args: {args}")
-                    # Try as object with __dict__
-                    elif hasattr(tool_call, "__dict__"):
-                        logger.info("Tool call has __dict__")
-                        tool_call_id = tool_call.__dict__.get("id")
-                        tool_name = tool_call.__dict__.get("name", None)
-                        args = tool_call.__dict__.get("args", {})
-                        logger.info(f"__dict__ extraction - id: {tool_call_id}, name: {tool_name}, args: {args}")
-                    else:
-                        logger.warning("Could not extract tool call info")
+
+                    tool_call_id = _extract_tool_call_field(tool_call, "id")
+                    tool_name = _extract_tool_call_field(tool_call, "name")
+                    args = _extract_tool_call_field(tool_call, "args", {})
+                    logger.info(f"Extracted tool call - id: {tool_call_id}, name: {tool_name}, args: {args}")
                     
                     if tool_call_id is None:
                         logger.warning("tool_call_id is None, generating UUID")
@@ -531,11 +511,18 @@ Your operations are restricted to: {cwd}
                         file_path = args.get("file_path", "")
                         old_string = args.get("old_string", "")
                         new_string = args.get("new_string", "")
+                        append = args.get("append", False)
                         logger.info(f"File path: {file_path}")
                         logger.info(f"Old string length: {len(old_string)}")
                         logger.info(f"New string length: {len(new_string)}")
-                        
-                        tool = WriteFileTool(file_path=file_path, old_string=old_string, new_string=new_string)
+                        logger.info(f"Append mode: {append}")
+
+                        tool = WriteFileTool(
+                            file_path=file_path,
+                            old_string=old_string,
+                            new_string=new_string,
+                            append=append,
+                        )
                         result = tool.execute()
                         logger.info(f"Tool result: {result[:200]}")
                     
@@ -548,7 +535,7 @@ Your operations are restricted to: {cwd}
                             content=result,
                             tool_call_id=tool_call_id,
                         )
-                        logger.info(f"Created ToolMessage")
+                        logger.info("Created ToolMessage")
                         tool_results.append(tool_msg)
                 
                 logger.info(f"Tool results count: {len(tool_results)}")
@@ -571,7 +558,7 @@ Your operations are restricted to: {cwd}
             """Determine if we should continue to tools or end."""
             messages = state["messages"]
             last_message = messages[-1]
-            if last_message.tool_calls:
+            if getattr(last_message, "tool_calls", None):
                 return "tools"
             return END
 
@@ -714,8 +701,8 @@ Your operations are restricted to: {cwd}
         self.console.print()
 
         # Conversation state
-        config = {"configurable": {"thread_id": "1"}}
-        messages = []
+        thread_id = "1"
+        config = {"configurable": {"thread_id": thread_id}}
 
         while True:
             try:
@@ -735,7 +722,8 @@ Your operations are restricted to: {cwd}
 
                 # Handle clear command
                 if user_input.lower() == "clear":
-                    messages = []
+                    thread_id = str(int(thread_id) + 1)
+                    config = {"configurable": {"thread_id": thread_id}}
                     self.console.clear()
                     self.console.print(
                         Panel(
@@ -752,20 +740,29 @@ Your operations are restricted to: {cwd}
                     continue
 
                 # Add user message
-                messages.append(("user", user_input))
                 self.display_message(user_input, sender="user")
+
+                # Get previous message count from graph state to avoid re-printing old messages
+                previous_count = 0
+                try:
+                    state_snapshot = self.app.get_state(config)
+                    existing_messages = state_snapshot.values.get("messages", [])
+                    previous_count = len(existing_messages)
+                except Exception as e:
+                    logger.debug(f"Could not read previous state: {e}")
 
                 # Get model response
                 response = self.app.invoke(
-                    {"messages": messages},
+                    {"messages": [("user", user_input)]},
                     config=config,
                 )
 
                 logger.info(f"Response from app.invoke: {response}")
                 logger.info(f"Response messages count: {len(response['messages'])}")
 
-                # Process all messages in response
-                for msg in response["messages"]:
+                # Process only the new messages from this turn
+                new_messages = response["messages"][previous_count:]
+                for msg in new_messages:
                     logger.info(f"Processing message: type={type(msg)}, content_preview={str(msg)[:100]}")
                     
                     if msg.type == "ai":
@@ -785,8 +782,12 @@ Your operations are restricted to: {cwd}
                                 )
                             # Show tool calls
                             for tool_call in msg.tool_calls:
-                                tool_name = tool_call.get('name', 'unknown')
-                                args = tool_call.get('args', {})
+                                if isinstance(tool_call, dict):
+                                    tool_name = tool_call.get("name", "unknown")
+                                    args = tool_call.get("args", {})
+                                else:
+                                    tool_name = getattr(tool_call, "name", "unknown")
+                                    args = getattr(tool_call, "args", {})
                                 self.console.print(
                                     Panel(
                                         f"[bold]{tool_name}[/bold]\n{json.dumps(args, indent=2)}",
@@ -799,7 +800,6 @@ Your operations are restricted to: {cwd}
                         elif hasattr(msg, "content") and msg.content:
                             logger.info(f"AI message with content: {msg.content[:100]}")
                             self.display_message(msg.content, sender="assistant")
-                            messages.append(("assistant", msg.content))
                     elif msg.type == "tool":
                         logger.info(f"Tool message: {msg.content[:100]}")
                         # Show tool results
@@ -813,10 +813,6 @@ Your operations are restricted to: {cwd}
                                 padding=(1, 2),
                             )
                         )
-                        messages.append(("tool", msg.content))
-                    elif msg.type == "human":
-                        logger.info(f"Human message: {msg.content[:100]}")
-                        messages.append(("user", msg.content))
 
             except KeyboardInterrupt:
                 self.console.print("\n[bold]Use 'exit' or 'quit' to leave[/bold]")
