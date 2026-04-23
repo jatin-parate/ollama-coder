@@ -9,6 +9,8 @@ import sys
 from pathlib import Path
 from typing import Any, List, Tuple
 
+from langchain_core.caches import BaseCache
+from langchain_core.messages import trim_messages
 from langchain_ollama import ChatOllama
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.graph import END, MessagesState, StateGraph
@@ -37,6 +39,25 @@ logger = logging.getLogger(__name__)
 logging.getLogger('httpcore').setLevel(logging.WARNING)
 logging.getLogger('httpx').setLevel(logging.WARNING)
 logging.getLogger('asyncio').setLevel(logging.WARNING)
+
+
+class SessionResponseCache(BaseCache):
+    """Simple in-memory cache for exact prompt and model matches."""
+
+    def __init__(self) -> None:
+        self._cache: dict[tuple[str, str], Any] = {}
+
+    def lookup(self, prompt: str, llm_string: str) -> Any:
+        """Return a cached generation list for an exact request match."""
+        return self._cache.get((prompt, llm_string))
+
+    def update(self, prompt: str, llm_string: str, return_val: Any) -> None:
+        """Store generation results for later exact-match reuse."""
+        self._cache[(prompt, llm_string)] = return_val
+
+    def clear(self, **kwargs: Any) -> None:
+        """Clear cached generations."""
+        self._cache.clear()
 
 
 class BashTool(BaseModel):
@@ -285,6 +306,23 @@ class OllamaChatCLI:
     def __init__(self, model_id: str = None):
         """Initialize the chat application."""
         self.model_id = model_id or os.environ.get("OLLAMA_MODEL", "llama3.2")
+        self.temperature = self._get_float_env("OLLAMA_TEMPERATURE", 0.0)
+        self.enable_exact_cache = os.environ.get("OLLAMA_EXACT_CACHE", "1") != "0"
+        self.keep_alive = os.environ.get("OLLAMA_KEEP_ALIVE", "-1")
+        self.num_ctx = self._get_int_env("OLLAMA_NUM_CTX", 4096)
+        self.history_token_budget = min(
+            self._get_int_env("OLLAMA_HISTORY_TOKENS", max(1024, int(self.num_ctx * 0.6))),
+            self.num_ctx,
+        )
+
+        if self.enable_exact_cache and self.temperature != 0:
+            logger.warning(
+                "Disabling exact response cache because OLLAMA_TEMPERATURE=%s is non-deterministic.",
+                self.temperature,
+            )
+            self.enable_exact_cache = False
+
+        self.response_cache = SessionResponseCache() if self.enable_exact_cache else None
         self.console = Console()
         self.memory = MemorySaver()
         self.chat_history: List[Tuple[str, str]] = []
@@ -293,11 +331,16 @@ class OllamaChatCLI:
         # System prompt for the agent
         self.system_prompt = self._build_system_prompt()
 
-        # Initialize the LangChain model with tools
-        self.model = ChatOllama(
+        # Keep the model resident and cap the dynamic suffix so Ollama can reuse
+        # the same prompt prefix across turns.
+        self.base_model = ChatOllama(
             model=self.model_id,
-            temperature=0.7,
-        ).bind_tools([BashTool, ReadFileTool, WriteFileTool])
+            temperature=self.temperature,
+            cache=self.response_cache,
+            keep_alive=self.keep_alive,
+            num_ctx=self.num_ctx,
+        )
+        self.model = self.base_model.bind_tools([BashTool, ReadFileTool, WriteFileTool])
 
         # Build the LangGraph workflow
         self.workflow = self._build_workflow()
@@ -307,6 +350,62 @@ class OllamaChatCLI:
         self.session = PromptSession()
         self.completer = FileCompleter(self)
         self._setup_keybindings()
+
+    def _get_int_env(self, env_name: str, default: int) -> int:
+        """Parse integer environment variables with a safe fallback."""
+        raw_value = os.environ.get(env_name)
+        if raw_value is None:
+            return default
+
+        try:
+            parsed_value = int(raw_value)
+        except ValueError:
+            logger.warning(f"Invalid integer for {env_name}: {raw_value!r}. Using default {default}.")
+            return default
+
+        if parsed_value <= 0:
+            logger.warning(f"Non-positive integer for {env_name}: {parsed_value}. Using default {default}.")
+            return default
+
+        return parsed_value
+
+    def _get_float_env(self, env_name: str, default: float) -> float:
+        """Parse float environment variables with a safe fallback."""
+        raw_value = os.environ.get(env_name)
+        if raw_value is None:
+            return default
+
+        try:
+            return float(raw_value)
+        except ValueError:
+            logger.warning(f"Invalid float for {env_name}: {raw_value!r}. Using default {default}.")
+            return default
+
+    def _trim_messages_for_context(self, messages: list[Any]) -> list[Any]:
+        """Trim dynamic conversation history to preserve a stable cached prefix."""
+        if len(messages) <= 1:
+            return messages
+
+        try:
+            trimmed_messages = trim_messages(
+                messages,
+                max_tokens=self.history_token_budget,
+                token_counter=self.base_model,
+                strategy="last",
+                start_on="human",
+                include_system=False,
+            )
+        except Exception as e:
+            logger.warning(f"Falling back to untrimmed message history: {e}")
+            return messages
+
+        logger.info(
+            "Trimmed message history from %s to %s messages using a %s-token budget",
+            len(messages),
+            len(trimmed_messages),
+            self.history_token_budget,
+        )
+        return trimmed_messages
 
     def _build_system_prompt(self) -> str:
         """Build a comprehensive system prompt for the agent."""
@@ -417,6 +516,8 @@ Your operations are restricted to: {cwd}
             else:
                 # For ToolMessage or other types, keep as is
                 messages = state["messages"]
+
+            messages = self._trim_messages_for_context(messages)
             
             # Prepend system message if not already present
             if not messages or not isinstance(messages[0], SystemMessage):
@@ -690,6 +791,10 @@ Your operations are restricted to: {cwd}
                 Text.from_markup(
                     f"[bold]Ollama Coder CLI[/bold]\n"
                     f"Model: [cyan]{self.model_id}[/cyan]\n"
+                    f"Temperature: [cyan]{self.temperature}[/cyan]\n"
+                    f"Context window: [cyan]{self.num_ctx}[/cyan] tokens\n"
+                    f"Keep alive: [cyan]{self.keep_alive}[/cyan]\n"
+                    f"Exact cache: [cyan]{'on' if self.enable_exact_cache else 'off'}[/cyan]\n"
                     f"Type 'exit' or 'quit' to leave\n"
                     f"Type 'clear' to reset conversation\n"
                     f"Use '@' + Tab to browse files in current directory\n"
