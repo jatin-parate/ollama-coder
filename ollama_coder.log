@@ -1,0 +1,882 @@
+2026-04-23 18:58:32,608 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 18:58:32,609 - ollama_coder.cli - INFO - State messages count: 1
+2026-04-23 18:58:32,609 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.human.HumanMessage'>
+2026-04-23 18:58:32,609 - ollama_coder.cli - INFO - Last message content: Use bash tool to see file tree then use file related tool to review __init__.py file in ollama_coder
+2026-04-23 18:58:32,609 - ollama_coder.cli - INFO - Processed message length: 110
+2026-04-23 18:58:32,609 - ollama_coder.cli - INFO - Messages prepared for model: 1
+2026-04-23 18:58:47,396 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 18:58:47,397 - ollama_coder.cli - INFO - Model response: content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:28:47.39357Z', 'done': True, 'done_reason': 'stop', 'total_duration': 14739086917, 'load_duration': 4134939958, 'prompt_eval_count': 439, 'prompt_eval_duration': 2514951209, 'eval_count': 105, 'eval_duration': 7982680753, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dba87-2662-77b0-8cd6-28035770d9c4-0' tool_calls=[{'name': 'BashTool', 'args': {'command': 'tree -L 2'}, 'id': 'e2a0f71f-9721-44d0-a234-02616360ccc8', 'type': 'tool_call'}] invalid_tool_calls=[] usage_metadata={'input_tokens': 439, 'output_tokens': 105, 'total_tokens': 544}
+2026-04-23 18:58:47,397 - ollama_coder.cli - INFO - Tool calls in response: [{'name': 'BashTool', 'args': {'command': 'tree -L 2'}, 'id': 'e2a0f71f-9721-44d0-a234-02616360ccc8', 'type': 'tool_call'}]
+2026-04-23 18:58:47,397 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - === TOOL NODE START ===
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - State messages count: 2
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Is AIMessage: True
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Tool calls present: [{'name': 'BashTool', 'args': {'command': 'tree -L 2'}, 'id': 'e2a0f71f-9721-44d0-a234-02616360ccc8', 'type': 'tool_call'}]
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Tool calls type: <class 'list'>
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Tool calls length: 1
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Tool call 0: {'name': 'BashTool', 'args': {'command': 'tree -L 2'}, 'id': 'e2a0f71f-9721-44d0-a234-02616360ccc8', 'type': 'tool_call'}
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Tool call 0 type: <class 'dict'>
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Processing tool call: {'name': 'BashTool', 'args': {'command': 'tree -L 2'}, 'id': 'e2a0f71f-9721-44d0-a234-02616360ccc8', 'type': 'tool_call'}
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Tool call is dict
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Dict extraction - id: e2a0f71f-9721-44d0-a234-02616360ccc8, name: BashTool, args: {'command': 'tree -L 2'}
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Final tool_call_id: e2a0f71f-9721-44d0-a234-02616360ccc8
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Final tool_name: BashTool
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Executing BashTool
+2026-04-23 18:58:47,406 - ollama_coder.cli - INFO - Command: tree -L 2
+2026-04-23 18:58:47,448 - ollama_coder.cli - INFO - Tool result: .
+├── README.md
+├── ollama_coder.log
+├── pyproject.toml
+├── src
+│   └── ollama_coder
+└── uv.lock
+
+3 directories, 4 files
+
+2026-04-23 18:58:47,448 - ollama_coder.cli - INFO - Created ToolMessage
+2026-04-23 18:58:47,448 - ollama_coder.cli - INFO - Tool results count: 1
+2026-04-23 18:58:47,448 - ollama_coder.cli - INFO - === TOOL NODE END ===
+2026-04-23 18:58:47,449 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 18:58:47,450 - ollama_coder.cli - INFO - State messages count: 3
+2026-04-23 18:58:47,450 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.tool.ToolMessage'>
+2026-04-23 18:58:47,450 - ollama_coder.cli - INFO - Last message content: .
+├── README.md
+├── ollama_coder.log
+├── pyproject.toml
+├── src
+│   └── ollama_coder
+└── uv.lock
+
+3 
+2026-04-23 18:58:47,450 - ollama_coder.cli - INFO - Processed message length: 121
+2026-04-23 18:58:47,450 - ollama_coder.cli - INFO - Messages prepared for model: 3
+2026-04-23 18:58:59,493 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 18:58:59,494 - ollama_coder.cli - INFO - Model response: content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:28:59.492107Z', 'done': True, 'done_reason': 'stop', 'total_duration': 12035657208, 'load_duration': 117887500, 'prompt_eval_count': 539, 'prompt_eval_duration': 3296735041, 'eval_count': 103, 'eval_duration': 8568393002, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dba87-605a-73b0-976d-756c1cc05c41-0' tool_calls=[{'name': 'ReadFileTool', 'args': {'file_path': 'src/ollama_coder/__init__.py'}, 'id': '20985b76-cda2-4e04-9cdb-136cccab79be', 'type': 'tool_call'}] invalid_tool_calls=[] usage_metadata={'input_tokens': 539, 'output_tokens': 103, 'total_tokens': 642}
+2026-04-23 18:58:59,494 - ollama_coder.cli - INFO - Tool calls in response: [{'name': 'ReadFileTool', 'args': {'file_path': 'src/ollama_coder/__init__.py'}, 'id': '20985b76-cda2-4e04-9cdb-136cccab79be', 'type': 'tool_call'}]
+2026-04-23 18:58:59,494 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 18:58:59,505 - ollama_coder.cli - INFO - === TOOL NODE START ===
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - State messages count: 4
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Is AIMessage: True
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Tool calls present: [{'name': 'ReadFileTool', 'args': {'file_path': 'src/ollama_coder/__init__.py'}, 'id': '20985b76-cda2-4e04-9cdb-136cccab79be', 'type': 'tool_call'}]
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Tool calls type: <class 'list'>
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Tool calls length: 1
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Tool call 0: {'name': 'ReadFileTool', 'args': {'file_path': 'src/ollama_coder/__init__.py'}, 'id': '20985b76-cda2-4e04-9cdb-136cccab79be', 'type': 'tool_call'}
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Tool call 0 type: <class 'dict'>
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Processing tool call: {'name': 'ReadFileTool', 'args': {'file_path': 'src/ollama_coder/__init__.py'}, 'id': '20985b76-cda2-4e04-9cdb-136cccab79be', 'type': 'tool_call'}
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Tool call is dict
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Dict extraction - id: 20985b76-cda2-4e04-9cdb-136cccab79be, name: ReadFileTool, args: {'file_path': 'src/ollama_coder/__init__.py'}
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Final tool_call_id: 20985b76-cda2-4e04-9cdb-136cccab79be
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Final tool_name: ReadFileTool
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - Executing ReadFileTool
+2026-04-23 18:58:59,506 - ollama_coder.cli - INFO - File path: src/ollama_coder/__init__.py
+2026-04-23 18:58:59,507 - ollama_coder.cli - INFO - Read file: /Users/jparate/ai-workspace/ollama-coder/src/ollama_coder/__init__.py, size: 102 bytes
+2026-04-23 18:58:59,507 - ollama_coder.cli - INFO - Tool result: """Ollama Coder CLI - A terminal chat interface using Ollama and LangChain."""
+
+__version__ = "0.1.0"
+
+2026-04-23 18:58:59,507 - ollama_coder.cli - INFO - Created ToolMessage
+2026-04-23 18:58:59,507 - ollama_coder.cli - INFO - Tool results count: 1
+2026-04-23 18:58:59,507 - ollama_coder.cli - INFO - === TOOL NODE END ===
+2026-04-23 18:58:59,507 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 18:58:59,507 - ollama_coder.cli - INFO - State messages count: 5
+2026-04-23 18:58:59,507 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.tool.ToolMessage'>
+2026-04-23 18:58:59,507 - ollama_coder.cli - INFO - Last message content: """Ollama Coder CLI - A terminal chat interface using Ollama and LangChain."""
+
+__version__ = "0.1.0
+2026-04-23 18:58:59,508 - ollama_coder.cli - INFO - Processed message length: 102
+2026-04-23 18:58:59,508 - ollama_coder.cli - INFO - Messages prepared for model: 5
+2026-04-23 18:59:13,714 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 18:59:13,715 - ollama_coder.cli - INFO - Model response: content='Here is the file tree and the contents of the `__init__.py` file:\n\n### File Tree\n```\n.\n├── README.md\n├── ollama_coder.log\n├── pyproject.toml\n└── src\n    └── ollama_coder\n```\n\n### `__init__.py` Contents\n```python\n"""Ollama Coder CLI - A terminal chat interface using Ollama and LangChain."""\n\n__version__ = "0.1.0"\n```\n\nThe file defines the package as a terminal chat interface and sets the version to `0.1.0`.' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:29:13.702231Z', 'done': True, 'done_reason': 'stop', 'total_duration': 14192104375, 'load_duration': 127545625, 'prompt_eval_count': 625, 'prompt_eval_duration': 761114375, 'eval_count': 164, 'eval_duration': 13164529795, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dba87-8f74-7443-b84d-cd74b485d98c-0' tool_calls=[] invalid_tool_calls=[] usage_metadata={'input_tokens': 625, 'output_tokens': 164, 'total_tokens': 789}
+2026-04-23 18:59:13,715 - ollama_coder.cli - INFO - Tool calls in response: []
+2026-04-23 18:59:13,715 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 18:59:13,735 - ollama_coder.cli - INFO - Response from app.invoke: {'messages': [HumanMessage(content='Use bash tool to see file tree then use file related tool to review __init__.py file in ollama_coder directory', additional_kwargs={}, response_metadata={}, id='50cde87c-b2c2-4168-8a04-0b399e4f55f0'), AIMessage(content='', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:28:47.39357Z', 'done': True, 'done_reason': 'stop', 'total_duration': 14739086917, 'load_duration': 4134939958, 'prompt_eval_count': 439, 'prompt_eval_duration': 2514951209, 'eval_count': 105, 'eval_duration': 7982680753, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dba87-2662-77b0-8cd6-28035770d9c4-0', tool_calls=[{'name': 'BashTool', 'args': {'command': 'tree -L 2'}, 'id': 'e2a0f71f-9721-44d0-a234-02616360ccc8', 'type': 'tool_call'}], invalid_tool_calls=[], usage_metadata={'input_tokens': 439, 'output_tokens': 105, 'total_tokens': 544}), ToolMessage(content='.\n├── README.md\n├── ollama_coder.log\n├── pyproject.toml\n├── src\n│\xa0\xa0 └── ollama_coder\n└── uv.lock\n\n3 directories, 4 files\n', id='72298b0e-1edf-483b-9c18-3bd0e36d017e', tool_call_id='e2a0f71f-9721-44d0-a234-02616360ccc8'), AIMessage(content='', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:28:59.492107Z', 'done': True, 'done_reason': 'stop', 'total_duration': 12035657208, 'load_duration': 117887500, 'prompt_eval_count': 539, 'prompt_eval_duration': 3296735041, 'eval_count': 103, 'eval_duration': 8568393002, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dba87-605a-73b0-976d-756c1cc05c41-0', tool_calls=[{'name': 'ReadFileTool', 'args': {'file_path': 'src/ollama_coder/__init__.py'}, 'id': '20985b76-cda2-4e04-9cdb-136cccab79be', 'type': 'tool_call'}], invalid_tool_calls=[], usage_metadata={'input_tokens': 539, 'output_tokens': 103, 'total_tokens': 642}), ToolMessage(content='"""Ollama Coder CLI - A terminal chat interface using Ollama and LangChain."""\n\n__version__ = "0.1.0"\n', id='2ff5c02b-f9bd-4fda-abbc-18d5a6b50881', tool_call_id='20985b76-cda2-4e04-9cdb-136cccab79be'), AIMessage(content='Here is the file tree and the contents of the `__init__.py` file:\n\n### File Tree\n```\n.\n├── README.md\n├── ollama_coder.log\n├── pyproject.toml\n└── src\n    └── ollama_coder\n```\n\n### `__init__.py` Contents\n```python\n"""Ollama Coder CLI - A terminal chat interface using Ollama and LangChain."""\n\n__version__ = "0.1.0"\n```\n\nThe file defines the package as a terminal chat interface and sets the version to `0.1.0`.', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:29:13.702231Z', 'done': True, 'done_reason': 'stop', 'total_duration': 14192104375, 'load_duration': 127545625, 'prompt_eval_count': 625, 'prompt_eval_duration': 761114375, 'eval_count': 164, 'eval_duration': 13164529795, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dba87-8f74-7443-b84d-cd74b485d98c-0', tool_calls=[], invalid_tool_calls=[], usage_metadata={'input_tokens': 625, 'output_tokens': 164, 'total_tokens': 789})]}
+2026-04-23 18:59:13,735 - ollama_coder.cli - INFO - Response messages count: 6
+2026-04-23 18:59:13,735 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.human.HumanMessage'>, content_preview=content='Use bash tool to see file tree then use file related tool to review __init__.py file in oll
+2026-04-23 18:59:13,735 - ollama_coder.cli - INFO - Human message: Use bash tool to see file tree then use file related tool to review __init__.py file in ollama_coder
+2026-04-23 18:59:13,735 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T
+2026-04-23 18:59:13,735 - ollama_coder.cli - INFO - AI message with tool calls: [{'name': 'BashTool', 'args': {'command': 'tree -L 2'}, 'id': 'e2a0f71f-9721-44d0-a234-02616360ccc8', 'type': 'tool_call'}]
+2026-04-23 18:59:13,736 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,737 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,737 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,737 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,737 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,737 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,737 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,737 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,737 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,737 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,741 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.tool.ToolMessage'>, content_preview=content='.\n├── README.md\n├── ollama_coder.log\n├── pyproject.toml\n├── src\n│\xa0\xa0 └── ollama_c
+2026-04-23 18:59:13,741 - ollama_coder.cli - INFO - Tool message: .
+├── README.md
+├── ollama_coder.log
+├── pyproject.toml
+├── src
+│   └── ollama_coder
+└── uv.lock
+
+3 
+2026-04-23 18:59:13,742 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 1, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 2, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 3, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 4, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 5, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 6, 9, True
+2026-04-23 18:59:13,742 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,742 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=8,level=0,tokens=3), 8, 9, False
+2026-04-23 18:59:13,743 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T
+2026-04-23 18:59:13,743 - ollama_coder.cli - INFO - AI message with tool calls: [{'name': 'ReadFileTool', 'args': {'file_path': 'src/ollama_coder/__init__.py'}, 'id': '20985b76-cda2-4e04-9cdb-136cccab79be', 'type': 'tool_call'}]
+2026-04-23 18:59:13,744 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 18:59:13,744 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.tool.ToolMessage'>, content_preview=content='"""Ollama Coder CLI - A terminal chat interface using Ollama and LangChain."""\n\n__version
+2026-04-23 18:59:13,744 - ollama_coder.cli - INFO - Tool message: """Ollama Coder CLI - A terminal chat interface using Ollama and LangChain."""
+
+__version__ = "0.1.0
+2026-04-23 18:59:13,744 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=2,level=0,tokens=3), 2, 3, False
+2026-04-23 18:59:13,744 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='Here is the file tree and the contents of the `__init__.py` file:\n\n### File Tree\n```\n.\
+2026-04-23 18:59:13,744 - ollama_coder.cli - INFO - AI message with content: Here is the file tree and the contents of the `__init__.py` file:
+
+### File Tree
+```
+.
+├── README.md
+2026-04-23 18:59:13,745 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=2,level=0,tokens=3), 2, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=2,level=0,tokens=3), 2, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=2,level=0,tokens=3), 2, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=2,level=0,tokens=3), 2, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=2,level=0,tokens=3), 2, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=2,level=0,tokens=3), 2, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=2,level=0,tokens=3), 2, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=2,level=0,tokens=3), 2, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=3,level=0,tokens=6), 3, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=3,level=0,tokens=6), 3, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=12,level=0,tokens=7), 12, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=12,level=0,tokens=7), 12, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=12,level=0,tokens=7), 12, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=12,level=0,tokens=7), 12, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=12,level=0,tokens=7), 12, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=12,level=0,tokens=7), 12, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=12,level=0,tokens=7), 12, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=12,level=0,tokens=7), 12, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=13,level=0,tokens=10), 13, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=13,level=0,tokens=10), 13, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 18:59:13,745 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=19,level=0,tokens=11), 19, 20, False
+2026-04-23 19:07:22,199 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 19:07:22,200 - ollama_coder.cli - INFO - State messages count: 1
+2026-04-23 19:07:22,200 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.human.HumanMessage'>
+2026-04-23 19:07:22,200 - ollama_coder.cli - INFO - Last message content: create a file named research.md
+2026-04-23 19:07:22,200 - ollama_coder.cli - INFO - Processed message length: 31
+2026-04-23 19:07:22,200 - ollama_coder.cli - INFO - Messages prepared for model: 1
+2026-04-23 19:07:43,839 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:07:43,840 - ollama_coder.cli - INFO - Model response: content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:37:43.83755Z', 'done': True, 'done_reason': 'stop', 'total_duration': 21621745209, 'load_duration': 4152847042, 'prompt_eval_count': 666, 'prompt_eval_duration': 3711449000, 'eval_count': 180, 'eval_duration': 13632491829, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dba8f-3b18-7283-a1bd-692f108825d4-0' tool_calls=[{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'new_string': '# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research here]\n\n## Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n## Conclusion\n\n[Insert conclusion here]'}, 'id': '258667e6-e851-4d78-b15c-5abbbb153209', 'type': 'tool_call'}] invalid_tool_calls=[] usage_metadata={'input_tokens': 666, 'output_tokens': 180, 'total_tokens': 846}
+2026-04-23 19:07:43,840 - ollama_coder.cli - INFO - Tool calls in response: [{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'new_string': '# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research here]\n\n## Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n## Conclusion\n\n[Insert conclusion here]'}, 'id': '258667e6-e851-4d78-b15c-5abbbb153209', 'type': 'tool_call'}]
+2026-04-23 19:07:43,840 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 19:07:43,844 - ollama_coder.cli - INFO - === TOOL NODE START ===
+2026-04-23 19:07:43,845 - ollama_coder.cli - INFO - State messages count: 2
+2026-04-23 19:07:43,845 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:07:43,845 - ollama_coder.cli - INFO - Is AIMessage: True
+2026-04-23 19:07:43,845 - ollama_coder.cli - INFO - Tool calls present: [{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'new_string': '# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research here]\n\n## Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n## Conclusion\n\n[Insert conclusion here]'}, 'id': '258667e6-e851-4d78-b15c-5abbbb153209', 'type': 'tool_call'}]
+2026-04-23 19:07:43,845 - ollama_coder.cli - INFO - Tool calls type: <class 'list'>
+2026-04-23 19:07:43,845 - ollama_coder.cli - INFO - Tool calls length: 1
+2026-04-23 19:07:43,845 - ollama_coder.cli - INFO - Tool call 0: {'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'new_string': '# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research here]\n\n## Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n## Conclusion\n\n[Insert conclusion here]'}, 'id': '258667e6-e851-4d78-b15c-5abbbb153209', 'type': 'tool_call'}
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - Tool call 0 type: <class 'dict'>
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - Processing tool call: {'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'new_string': '# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research here]\n\n## Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n## Conclusion\n\n[Insert conclusion here]'}, 'id': '258667e6-e851-4d78-b15c-5abbbb153209', 'type': 'tool_call'}
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - Tool call is dict
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - Dict extraction - id: 258667e6-e851-4d78-b15c-5abbbb153209, name: WriteFileTool, args: {'file_path': 'research.md', 'new_string': '# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research here]\n\n## Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n## Conclusion\n\n[Insert conclusion here]'}
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - Final tool_call_id: 258667e6-e851-4d78-b15c-5abbbb153209
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - Final tool_name: WriteFileTool
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - Executing WriteFileTool
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - File path: research.md
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - Old string length: 0
+2026-04-23 19:07:43,846 - ollama_coder.cli - INFO - New string length: 182
+2026-04-23 19:07:43,847 - ollama_coder.cli - INFO - Creating new file: /Users/jparate/ai-workspace/ollama-coder/research.md
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - Successfully created file: /Users/jparate/ai-workspace/ollama-coder/research.md, size: 182 bytes
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - Tool result: Success: New file created at research.md
+File size: 182 bytes
+Location: /Users/jparate/ai-workspace/ollama-coder/research.md
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - Created ToolMessage
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - Tool results count: 1
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - === TOOL NODE END ===
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - State messages count: 3
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.tool.ToolMessage'>
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - Last message content: Success: New file created at research.md
+File size: 182 bytes
+Location: /Users/jparate/ai-workspace/
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - Processed message length: 384
+2026-04-23 19:07:43,848 - ollama_coder.cli - INFO - Messages prepared for model: 3
+2026-04-23 19:07:49,055 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:07:49,056 - ollama_coder.cli - INFO - Model response: content='The file `research.md` has been created successfully. It contains a basic template with sections for a summary, key findings, and a conclusion. You can now add your specific research details to this file.' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:37:49.05228Z', 'done': True, 'done_reason': 'stop', 'total_duration': 5201366959, 'load_duration': 106649292, 'prompt_eval_count': 808, 'prompt_eval_duration': 1748368917, 'eval_count': 44, 'eval_duration': 3327308709, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dba8f-8fa9-7221-a392-474ec5acb930-0' tool_calls=[] invalid_tool_calls=[] usage_metadata={'input_tokens': 808, 'output_tokens': 44, 'total_tokens': 852}
+2026-04-23 19:07:49,056 - ollama_coder.cli - INFO - Tool calls in response: []
+2026-04-23 19:07:49,056 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 19:07:49,064 - ollama_coder.cli - INFO - Response from app.invoke: {'messages': [HumanMessage(content='create a file named research.md', additional_kwargs={}, response_metadata={}, id='6a5bd95e-b9fd-4f83-a451-c3e939790464'), AIMessage(content='', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:37:43.83755Z', 'done': True, 'done_reason': 'stop', 'total_duration': 21621745209, 'load_duration': 4152847042, 'prompt_eval_count': 666, 'prompt_eval_duration': 3711449000, 'eval_count': 180, 'eval_duration': 13632491829, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dba8f-3b18-7283-a1bd-692f108825d4-0', tool_calls=[{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'new_string': '# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research here]\n\n## Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n## Conclusion\n\n[Insert conclusion here]'}, 'id': '258667e6-e851-4d78-b15c-5abbbb153209', 'type': 'tool_call'}], invalid_tool_calls=[], usage_metadata={'input_tokens': 666, 'output_tokens': 180, 'total_tokens': 846}), ToolMessage(content='Success: New file created at research.md\nFile size: 182 bytes\nLocation: /Users/jparate/ai-workspace/ollama-coder/research.md', id='502304b1-2c14-495c-ad09-cc8d736085bd', tool_call_id='258667e6-e851-4d78-b15c-5abbbb153209'), AIMessage(content='The file `research.md` has been created successfully. It contains a basic template with sections for a summary, key findings, and a conclusion. You can now add your specific research details to this file.', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:37:49.05228Z', 'done': True, 'done_reason': 'stop', 'total_duration': 5201366959, 'load_duration': 106649292, 'prompt_eval_count': 808, 'prompt_eval_duration': 1748368917, 'eval_count': 44, 'eval_duration': 3327308709, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dba8f-8fa9-7221-a392-474ec5acb930-0', tool_calls=[], invalid_tool_calls=[], usage_metadata={'input_tokens': 808, 'output_tokens': 44, 'total_tokens': 852})]}
+2026-04-23 19:07:49,064 - ollama_coder.cli - INFO - Response messages count: 4
+2026-04-23 19:07:49,064 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.human.HumanMessage'>, content_preview=content='create a file named research.md' additional_kwargs={} response_metadata={} id='6a5bd95e-b9f
+2026-04-23 19:07:49,064 - ollama_coder.cli - INFO - Human message: create a file named research.md
+2026-04-23 19:07:49,064 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T
+2026-04-23 19:07:49,064 - ollama_coder.cli - INFO - AI message with tool calls: [{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'new_string': '# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research here]\n\n## Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n## Conclusion\n\n[Insert conclusion here]'}, 'id': '258667e6-e851-4d78-b15c-5abbbb153209', 'type': 'tool_call'}]
+2026-04-23 19:07:49,067 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,067 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,067 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,067 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,067 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,068 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,068 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,068 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,068 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,068 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,071 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.tool.ToolMessage'>, content_preview=content='Success: New file created at research.md\nFile size: 182 bytes\nLocation: /Users/jparate/ai
+2026-04-23 19:07:49,071 - ollama_coder.cli - INFO - Tool message: Success: New file created at research.md
+File size: 182 bytes
+Location: /Users/jparate/ai-workspace/
+2026-04-23 19:07:49,071 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,071 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,071 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,071 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,071 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,071 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,072 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,072 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,072 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,072 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:07:49,072 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,072 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:07:49,073 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='The file `research.md` has been created successfully. It contains a basic template with sec
+2026-04-23 19:07:49,073 - ollama_coder.cli - INFO - AI message with content: The file `research.md` has been created successfully. It contains a basic template with sections for
+2026-04-23 19:07:49,073 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,073 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,073 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,073 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,074 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,074 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,074 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,074 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,074 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:07:49,074 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:08:29,243 - ollama_coder.cli - ERROR - Exception occurred: 'tool_call_id'
+Traceback (most recent call last):
+  File "/Users/jparate/ai-workspace/ollama-coder/src/ollama_coder/cli.py", line 665, in run
+    response = self.app.invoke(
+               ^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/pregel/main.py", line 3365, in invoke
+    for chunk in self.stream(
+                 ^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/pregel/main.py", line 2776, in stream
+    loop.after_tick()
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/pregel/_loop.py", line 589, in after_tick
+    self.updated_channels = apply_writes(
+                            ^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/pregel/_algo.py", line 297, in apply_writes
+    if channels[chan].update(vals) and next_version is not None:
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/channels/binop.py", line 122, in update
+    self.value = self.operator(self.value, value)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/graph/message.py", line 46, in _add_messages
+    return func(left, right, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/graph/message.py", line 200, in add_messages
+    for m in convert_to_messages(right)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/messages/utils.py", line 752, in convert_to_messages
+    return [_convert_to_message(m) for m in messages]
+            ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/messages/utils.py", line 708, in _convert_to_message
+    message_ = _create_message_from_message_type(message_type_str, template)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/messages/utils.py", line 662, in _create_message_from_message_type
+    message = ToolMessage(content=content, artifact=artifact, **kwargs)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/messages/tool.py", line 171, in __init__
+    super().__init__(content=content, **kwargs)
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/messages/base.py", line 179, in __init__
+    super().__init__(content=content, **kwargs)
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/load/serializable.py", line 118, in __init__
+    super().__init__(*args, **kwargs)
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/messages/tool.py", line 130, in coerce_args
+    tool_call_id = values["tool_call_id"]
+                   ~~~~~~^^^^^^^^^^^^^^^^
+KeyError: 'tool_call_id'
+2026-04-23 19:11:06,685 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 19:11:06,685 - ollama_coder.cli - INFO - State messages count: 1
+2026-04-23 19:11:06,685 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.human.HumanMessage'>
+2026-04-23 19:11:06,685 - ollama_coder.cli - INFO - Last message content: write a function to add two numbers in javascript in @@research.md file
+2026-04-23 19:11:06,687 - ollama_coder.cli - INFO - Processed message length: 290
+2026-04-23 19:11:06,687 - ollama_coder.cli - INFO - Messages prepared for model: 1
+2026-04-23 19:11:19,415 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:11:19,416 - ollama_coder.cli - INFO - Model response: content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:41:19.410692Z', 'done': True, 'done_reason': 'stop', 'total_duration': 12702365083, 'load_duration': 131119625, 'prompt_eval_count': 828, 'prompt_eval_duration': 5324643875, 'eval_count': 96, 'eval_duration': 7211263415, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dba92-a801-7101-a423-b19b573ff20f-0' tool_calls=[{'name': 'ReadFileTool', 'args': {'file_path': 'research.md'}, 'id': 'bf6a6a07-64bd-4f8f-a739-c59cc40e7931', 'type': 'tool_call'}] invalid_tool_calls=[] usage_metadata={'input_tokens': 828, 'output_tokens': 96, 'total_tokens': 924}
+2026-04-23 19:11:19,416 - ollama_coder.cli - INFO - Tool calls in response: [{'name': 'ReadFileTool', 'args': {'file_path': 'research.md'}, 'id': 'bf6a6a07-64bd-4f8f-a739-c59cc40e7931', 'type': 'tool_call'}]
+2026-04-23 19:11:19,416 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 19:11:19,428 - ollama_coder.cli - INFO - === TOOL NODE START ===
+2026-04-23 19:11:19,429 - ollama_coder.cli - INFO - State messages count: 2
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Is AIMessage: True
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Tool calls present: [{'name': 'ReadFileTool', 'args': {'file_path': 'research.md'}, 'id': 'bf6a6a07-64bd-4f8f-a739-c59cc40e7931', 'type': 'tool_call'}]
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Tool calls type: <class 'list'>
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Tool calls length: 1
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Tool call 0: {'name': 'ReadFileTool', 'args': {'file_path': 'research.md'}, 'id': 'bf6a6a07-64bd-4f8f-a739-c59cc40e7931', 'type': 'tool_call'}
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Tool call 0 type: <class 'dict'>
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Processing tool call: {'name': 'ReadFileTool', 'args': {'file_path': 'research.md'}, 'id': 'bf6a6a07-64bd-4f8f-a739-c59cc40e7931', 'type': 'tool_call'}
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Tool call is dict
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Dict extraction - id: bf6a6a07-64bd-4f8f-a739-c59cc40e7931, name: ReadFileTool, args: {'file_path': 'research.md'}
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Final tool_call_id: bf6a6a07-64bd-4f8f-a739-c59cc40e7931
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Final tool_name: ReadFileTool
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - Executing ReadFileTool
+2026-04-23 19:11:19,430 - ollama_coder.cli - INFO - File path: research.md
+2026-04-23 19:11:19,431 - ollama_coder.cli - INFO - Read file: /Users/jparate/ai-workspace/ollama-coder/research.md, size: 182 bytes
+2026-04-23 19:11:19,431 - ollama_coder.cli - INFO - Tool result: # Research
+
+This is a research document.
+
+## Summary
+
+[Insert summary of research here]
+
+## Key Findings
+
+- Finding 1
+- Finding 2
+- Finding 3
+
+## Conclusion
+
+[Insert conclusion here]
+2026-04-23 19:11:19,431 - ollama_coder.cli - INFO - Created ToolMessage
+2026-04-23 19:11:19,431 - ollama_coder.cli - INFO - Tool results count: 1
+2026-04-23 19:11:19,431 - ollama_coder.cli - INFO - === TOOL NODE END ===
+2026-04-23 19:11:19,432 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 19:11:19,432 - ollama_coder.cli - INFO - State messages count: 3
+2026-04-23 19:11:19,432 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.tool.ToolMessage'>
+2026-04-23 19:11:19,432 - ollama_coder.cli - INFO - Last message content: # Research
+
+This is a research document.
+
+## Summary
+
+[Insert summary of research here]
+
+## Key Find
+2026-04-23 19:11:19,432 - ollama_coder.cli - INFO - Processed message length: 182
+2026-04-23 19:11:19,433 - ollama_coder.cli - INFO - Messages prepared for model: 3
+2026-04-23 19:11:30,185 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:11:30,185 - ollama_coder.cli - INFO - Model response: content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:41:30.184073Z', 'done': True, 'done_reason': 'stop', 'total_duration': 10748669542, 'load_duration': 112803542, 'prompt_eval_count': 861, 'prompt_eval_duration': 1971585708, 'eval_count': 115, 'eval_duration': 8632975789, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dba92-d9c9-7e22-aef4-f80367ab9a43-0' tool_calls=[{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'old_string': '## Conclusion\n\n[Insert conclusion here]', 'new_string': '## Conclusion\n\n[Insert conclusion here]\n\n## JavaScript Function\n\n```javascript\nfunction addTwoNumbers(a, b) {\n  return a + b;\n}\n\nconsole.log(addTwoNumbers(2, 3)); // Output: 5\n```'}, 'id': '0f249943-698b-49c3-9895-574c033ac47d', 'type': 'tool_call'}] invalid_tool_calls=[] usage_metadata={'input_tokens': 861, 'output_tokens': 115, 'total_tokens': 976}
+2026-04-23 19:11:30,185 - ollama_coder.cli - INFO - Tool calls in response: [{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'old_string': '## Conclusion\n\n[Insert conclusion here]', 'new_string': '## Conclusion\n\n[Insert conclusion here]\n\n## JavaScript Function\n\n```javascript\nfunction addTwoNumbers(a, b) {\n  return a + b;\n}\n\nconsole.log(addTwoNumbers(2, 3)); // Output: 5\n```'}, 'id': '0f249943-698b-49c3-9895-574c033ac47d', 'type': 'tool_call'}]
+2026-04-23 19:11:30,185 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - === TOOL NODE START ===
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - State messages count: 4
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - Is AIMessage: True
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - Tool calls present: [{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'old_string': '## Conclusion\n\n[Insert conclusion here]', 'new_string': '## Conclusion\n\n[Insert conclusion here]\n\n## JavaScript Function\n\n```javascript\nfunction addTwoNumbers(a, b) {\n  return a + b;\n}\n\nconsole.log(addTwoNumbers(2, 3)); // Output: 5\n```'}, 'id': '0f249943-698b-49c3-9895-574c033ac47d', 'type': 'tool_call'}]
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - Tool calls type: <class 'list'>
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - Tool calls length: 1
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - Tool call 0: {'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'old_string': '## Conclusion\n\n[Insert conclusion here]', 'new_string': '## Conclusion\n\n[Insert conclusion here]\n\n## JavaScript Function\n\n```javascript\nfunction addTwoNumbers(a, b) {\n  return a + b;\n}\n\nconsole.log(addTwoNumbers(2, 3)); // Output: 5\n```'}, 'id': '0f249943-698b-49c3-9895-574c033ac47d', 'type': 'tool_call'}
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - Tool call 0 type: <class 'dict'>
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - Processing tool call: {'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'old_string': '## Conclusion\n\n[Insert conclusion here]', 'new_string': '## Conclusion\n\n[Insert conclusion here]\n\n## JavaScript Function\n\n```javascript\nfunction addTwoNumbers(a, b) {\n  return a + b;\n}\n\nconsole.log(addTwoNumbers(2, 3)); // Output: 5\n```'}, 'id': '0f249943-698b-49c3-9895-574c033ac47d', 'type': 'tool_call'}
+2026-04-23 19:11:30,187 - ollama_coder.cli - INFO - Tool call is dict
+2026-04-23 19:11:30,188 - ollama_coder.cli - INFO - Dict extraction - id: 0f249943-698b-49c3-9895-574c033ac47d, name: WriteFileTool, args: {'file_path': 'research.md', 'old_string': '## Conclusion\n\n[Insert conclusion here]', 'new_string': '## Conclusion\n\n[Insert conclusion here]\n\n## JavaScript Function\n\n```javascript\nfunction addTwoNumbers(a, b) {\n  return a + b;\n}\n\nconsole.log(addTwoNumbers(2, 3)); // Output: 5\n```'}
+2026-04-23 19:11:30,188 - ollama_coder.cli - INFO - Final tool_call_id: 0f249943-698b-49c3-9895-574c033ac47d
+2026-04-23 19:11:30,188 - ollama_coder.cli - INFO - Final tool_name: WriteFileTool
+2026-04-23 19:11:30,188 - ollama_coder.cli - INFO - Executing WriteFileTool
+2026-04-23 19:11:30,188 - ollama_coder.cli - INFO - File path: research.md
+2026-04-23 19:11:30,188 - ollama_coder.cli - INFO - Old string length: 39
+2026-04-23 19:11:30,188 - ollama_coder.cli - INFO - New string length: 179
+2026-04-23 19:11:30,188 - ollama_coder.cli - INFO - Editing existing file: /Users/jparate/ai-workspace/ollama-coder/research.md
+2026-04-23 19:11:30,189 - ollama_coder.cli - INFO - File size: 182 bytes
+2026-04-23 19:11:30,189 - ollama_coder.cli - INFO - Looking for string: ## Conclusion
+
+[Insert conclusion here]
+2026-04-23 19:11:30,189 - ollama_coder.cli - INFO - Found 1 occurrence(s) of the string
+2026-04-23 19:11:30,190 - ollama_coder.cli - INFO - Successfully wrote to file: /Users/jparate/ai-workspace/ollama-coder/research.md
+2026-04-23 19:11:30,190 - ollama_coder.cli - INFO - Tool result: Success: File research.md has been updated.
+Replaced 39 characters with 179 characters.
+File size changed from 182 to 322 bytes.
+2026-04-23 19:11:30,190 - ollama_coder.cli - INFO - Created ToolMessage
+2026-04-23 19:11:30,190 - ollama_coder.cli - INFO - Tool results count: 1
+2026-04-23 19:11:30,190 - ollama_coder.cli - INFO - === TOOL NODE END ===
+2026-04-23 19:11:30,191 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 19:11:30,191 - ollama_coder.cli - INFO - State messages count: 5
+2026-04-23 19:11:30,191 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.tool.ToolMessage'>
+2026-04-23 19:11:30,191 - ollama_coder.cli - INFO - Last message content: Success: File research.md has been updated.
+Replaced 39 characters with 179 characters.
+File size ch
+2026-04-23 19:11:30,191 - ollama_coder.cli - INFO - Processed message length: 128
+2026-04-23 19:11:30,191 - ollama_coder.cli - INFO - Messages prepared for model: 5
+2026-04-23 19:11:35,078 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:11:35,078 - ollama_coder.cli - INFO - Model response: content='I have added a JavaScript function to add two numbers to the `research.md` file.' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:41:35.077954Z', 'done': True, 'done_reason': 'stop', 'total_duration': 4884643958, 'load_duration': 82477250, 'prompt_eval_count': 1030, 'prompt_eval_duration': 3277440708, 'eval_count': 21, 'eval_duration': 1513618083, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dba93-03cf-7e51-ae6b-63b7d5bddf74-0' tool_calls=[] invalid_tool_calls=[] usage_metadata={'input_tokens': 1030, 'output_tokens': 21, 'total_tokens': 1051}
+2026-04-23 19:11:35,079 - ollama_coder.cli - INFO - Tool calls in response: []
+2026-04-23 19:11:35,079 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 19:11:35,080 - ollama_coder.cli - INFO - Response from app.invoke: {'messages': [HumanMessage(content='write a function to add two numbers in javascript in @@research.md file', additional_kwargs={}, response_metadata={}, id='90aa0602-def8-4d2b-b0f6-f4c82a13e951'), AIMessage(content='', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:41:19.410692Z', 'done': True, 'done_reason': 'stop', 'total_duration': 12702365083, 'load_duration': 131119625, 'prompt_eval_count': 828, 'prompt_eval_duration': 5324643875, 'eval_count': 96, 'eval_duration': 7211263415, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dba92-a801-7101-a423-b19b573ff20f-0', tool_calls=[{'name': 'ReadFileTool', 'args': {'file_path': 'research.md'}, 'id': 'bf6a6a07-64bd-4f8f-a739-c59cc40e7931', 'type': 'tool_call'}], invalid_tool_calls=[], usage_metadata={'input_tokens': 828, 'output_tokens': 96, 'total_tokens': 924}), ToolMessage(content='# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research here]\n\n## Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n## Conclusion\n\n[Insert conclusion here]', id='23d748ce-8de7-401a-aaa2-14eea6b16d3a', tool_call_id='bf6a6a07-64bd-4f8f-a739-c59cc40e7931'), AIMessage(content='', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:41:30.184073Z', 'done': True, 'done_reason': 'stop', 'total_duration': 10748669542, 'load_duration': 112803542, 'prompt_eval_count': 861, 'prompt_eval_duration': 1971585708, 'eval_count': 115, 'eval_duration': 8632975789, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dba92-d9c9-7e22-aef4-f80367ab9a43-0', tool_calls=[{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'old_string': '## Conclusion\n\n[Insert conclusion here]', 'new_string': '## Conclusion\n\n[Insert conclusion here]\n\n## JavaScript Function\n\n```javascript\nfunction addTwoNumbers(a, b) {\n  return a + b;\n}\n\nconsole.log(addTwoNumbers(2, 3)); // Output: 5\n```'}, 'id': '0f249943-698b-49c3-9895-574c033ac47d', 'type': 'tool_call'}], invalid_tool_calls=[], usage_metadata={'input_tokens': 861, 'output_tokens': 115, 'total_tokens': 976}), ToolMessage(content='Success: File research.md has been updated.\nReplaced 39 characters with 179 characters.\nFile size changed from 182 to 322 bytes.', id='9378dd6a-fc8d-49e9-97d7-bc20fac82085', tool_call_id='0f249943-698b-49c3-9895-574c033ac47d'), AIMessage(content='I have added a JavaScript function to add two numbers to the `research.md` file.', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:41:35.077954Z', 'done': True, 'done_reason': 'stop', 'total_duration': 4884643958, 'load_duration': 82477250, 'prompt_eval_count': 1030, 'prompt_eval_duration': 3277440708, 'eval_count': 21, 'eval_duration': 1513618083, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dba93-03cf-7e51-ae6b-63b7d5bddf74-0', tool_calls=[], invalid_tool_calls=[], usage_metadata={'input_tokens': 1030, 'output_tokens': 21, 'total_tokens': 1051})]}
+2026-04-23 19:11:35,080 - ollama_coder.cli - INFO - Response messages count: 6
+2026-04-23 19:11:35,080 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.human.HumanMessage'>, content_preview=content='write a function to add two numbers in javascript in @@research.md file' additional_kwargs=
+2026-04-23 19:11:35,080 - ollama_coder.cli - INFO - Human message: write a function to add two numbers in javascript in @@research.md file
+2026-04-23 19:11:35,080 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T
+2026-04-23 19:11:35,080 - ollama_coder.cli - INFO - AI message with tool calls: [{'name': 'ReadFileTool', 'args': {'file_path': 'research.md'}, 'id': 'bf6a6a07-64bd-4f8f-a739-c59cc40e7931', 'type': 'tool_call'}]
+2026-04-23 19:11:35,081 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,081 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,081 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,081 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,081 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,081 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,081 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,081 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,081 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,081 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,084 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.tool.ToolMessage'>, content_preview=content='# Research\n\nThis is a research document.\n\n## Summary\n\n[Insert summary of research her
+2026-04-23 19:11:35,084 - ollama_coder.cli - INFO - Tool message: # Research
+
+This is a research document.
+
+## Summary
+
+[Insert summary of research here]
+
+## Key Find
+2026-04-23 19:11:35,084 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,084 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=2,level=0,tokens=3), 2, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=4,level=0,tokens=6), 4, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=4,level=0,tokens=6), 4, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=4,level=0,tokens=6), 4, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=4,level=0,tokens=6), 4, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=4,level=0,tokens=6), 4, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=4,level=0,tokens=6), 4, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=4,level=0,tokens=6), 4, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=4,level=0,tokens=6), 4, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=6,level=0,tokens=9), 6, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=8,level=0,tokens=12), 8, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=8,level=0,tokens=12), 8, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=8,level=0,tokens=12), 8, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=8,level=0,tokens=12), 8, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=8,level=0,tokens=12), 8, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=8,level=0,tokens=12), 8, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=8,level=0,tokens=12), 8, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=8,level=0,tokens=12), 8, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=10,level=0,tokens=15), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=10,level=0,tokens=15), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=10,level=0,tokens=15), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=10,level=0,tokens=15), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=10,level=0,tokens=15), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=10,level=2,tokens=17), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=10,level=2,tokens=17), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=10,level=2,tokens=17), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=10,level=2,tokens=17), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=10,level=2,tokens=17), 10, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=10,level=2,tokens=17), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=10,level=2,tokens=17), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=10,level=2,tokens=17), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=10,level=2,tokens=17), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=11,level=1,tokens=21), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=11,level=1,tokens=21), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=11,level=1,tokens=21), 11, 17, True
+2026-04-23 19:11:35,085 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,085 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=11,level=2,tokens=22), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=11,level=2,tokens=22), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=11,level=2,tokens=22), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=11,level=2,tokens=22), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=11,level=2,tokens=22), 11, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=11,level=2,tokens=22), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=11,level=2,tokens=22), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=11,level=2,tokens=22), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=11,level=2,tokens=22), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=12,level=1,tokens=26), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=12,level=1,tokens=26), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=12,level=1,tokens=26), 12, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=12,level=2,tokens=27), 12, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=14,level=1,tokens=31), 14, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=14,level=1,tokens=31), 14, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=14,level=1,tokens=31), 14, 17, True
+2026-04-23 19:11:35,086 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=14,level=0,tokens=32), 14, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=14,level=0,tokens=32), 14, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=14,level=0,tokens=32), 14, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=14,level=0,tokens=32), 14, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=14,level=0,tokens=32), 14, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=14,level=0,tokens=32), 14, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=14,level=0,tokens=32), 14, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=14,level=0,tokens=32), 14, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,086 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=16,level=0,tokens=35), 16, 17, False
+2026-04-23 19:11:35,090 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T
+2026-04-23 19:11:35,090 - ollama_coder.cli - INFO - AI message with tool calls: [{'name': 'WriteFileTool', 'args': {'file_path': 'research.md', 'old_string': '## Conclusion\n\n[Insert conclusion here]', 'new_string': '## Conclusion\n\n[Insert conclusion here]\n\n## JavaScript Function\n\n```javascript\nfunction addTwoNumbers(a, b) {\n  return a + b;\n}\n\nconsole.log(addTwoNumbers(2, 3)); // Output: 5\n```'}, 'id': '0f249943-698b-49c3-9895-574c033ac47d', 'type': 'tool_call'}]
+2026-04-23 19:11:35,090 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,091 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.tool.ToolMessage'>, content_preview=content='Success: File research.md has been updated.\nReplaced 39 characters with 179 characters.\nF
+2026-04-23 19:11:35,091 - ollama_coder.cli - INFO - Tool message: Success: File research.md has been updated.
+Replaced 39 characters with 179 characters.
+File size ch
+2026-04-23 19:11:35,092 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 3, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 1, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 2, 3, True
+2026-04-23 19:11:35,092 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='I have added a JavaScript function to add two numbers to the `research.md` file.' additiona
+2026-04-23 19:11:35,092 - ollama_coder.cli - INFO - AI message with content: I have added a JavaScript function to add two numbers to the `research.md` file.
+2026-04-23 19:11:35,092 - markdown_it.rules_block.code - DEBUG - entering code: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.fence - DEBUG - entering fence: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.blockquote - DEBUG - entering blockquote: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.hr - DEBUG - entering hr: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.list - DEBUG - entering list: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.reference - DEBUG - entering reference: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.html_block - DEBUG - entering html_block: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,092 - markdown_it.rules_block.heading - DEBUG - entering heading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,093 - markdown_it.rules_block.lheading - DEBUG - entering lheading: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:11:35,093 - markdown_it.rules_block.paragraph - DEBUG - entering paragraph: StateBlock(line=0,level=0,tokens=0), 0, 1, False
+2026-04-23 19:24:27,232 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 19:24:27,233 - ollama_coder.cli - INFO - State messages count: 1
+2026-04-23 19:24:27,233 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.human.HumanMessage'>
+2026-04-23 19:24:27,233 - ollama_coder.cli - INFO - Last message content: remove the @@research.md file
+2026-04-23 19:24:27,234 - ollama_coder.cli - INFO - Processed message length: 388
+2026-04-23 19:24:27,235 - ollama_coder.cli - INFO - Messages prepared for model: 1
+2026-04-23 19:24:27,237 - ollama_coder.cli - ERROR - Exception occurred: Client.chat() got an unexpected keyword argument 'system'
+Traceback (most recent call last):
+  File "/Users/jparate/ai-workspace/ollama-coder/src/ollama_coder/cli.py", line 758, in run
+    response = self.app.invoke(
+               ^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/pregel/main.py", line 3365, in invoke
+    for chunk in self.stream(
+                 ^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/pregel/main.py", line 2759, in stream
+    for _ in runner.tick(
+             ^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py", line 167, in tick
+    run_with_retry(
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py", line 126, in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py", line 656, in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py", line 400, in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/src/ollama_coder/cli.py", line 426, in chat_node
+    response = self.model.invoke(
+               ^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/runnables/base.py", line 5695, in invoke
+    return self.bound.invoke(
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 455, in invoke
+    self.generate_prompt(
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1198, in generate_prompt
+    return self.generate(prompt_messages, stop=stop, callbacks=callbacks, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1005, in generate
+    self._generate_with_cache(
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_core/language_models/chat_models.py", line 1310, in _generate_with_cache
+    result = self._generate(
+             ^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_ollama/chat_models.py", line 1200, in _generate
+    final_chunk = self._chat_stream_with_aggregation(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_ollama/chat_models.py", line 1135, in _chat_stream_with_aggregation
+    for chunk in self._iterate_over_stream(messages, stop, **kwargs):
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_ollama/chat_models.py", line 1224, in _iterate_over_stream
+    for stream_resp in self._create_chat_stream(messages, stop, **kwargs):
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/jparate/ai-workspace/ollama-coder/.venv/lib/python3.12/site-packages/langchain_ollama/chat_models.py", line 1122, in _create_chat_stream
+    yield from self._client.chat(**chat_params)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Client.chat() got an unexpected keyword argument 'system'
+During task with name 'chat' and id 'd001dd28-48c9-6db3-afb3-86bac911aa36'
+2026-04-23 19:26:15,430 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 19:26:15,430 - ollama_coder.cli - INFO - State messages count: 1
+2026-04-23 19:26:15,431 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.human.HumanMessage'>
+2026-04-23 19:26:15,432 - ollama_coder.cli - INFO - Last message content: delete @@research.md file
+2026-04-23 19:26:15,433 - ollama_coder.cli - INFO - Processed message length: 384
+2026-04-23 19:26:15,433 - ollama_coder.cli - INFO - Messages prepared for model: 2
+2026-04-23 19:26:47,513 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:26:47,514 - ollama_coder.cli - INFO - Model response: content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:56:47.502636Z', 'done': True, 'done_reason': 'stop', 'total_duration': 32063519042, 'load_duration': 4395766709, 'prompt_eval_count': 1347, 'prompt_eval_duration': 7557277083, 'eval_count': 257, 'eval_duration': 19956613790, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dbaa0-85c9-70b1-b56f-f555ded963f3-0' tool_calls=[{'name': 'BashTool', 'args': {'command': 'rm research.md'}, 'id': '58f02d9a-9075-43cf-bc50-2908ff06f1de', 'type': 'tool_call'}] invalid_tool_calls=[] usage_metadata={'input_tokens': 1347, 'output_tokens': 257, 'total_tokens': 1604}
+2026-04-23 19:26:47,514 - ollama_coder.cli - INFO - Tool calls in response: [{'name': 'BashTool', 'args': {'command': 'rm research.md'}, 'id': '58f02d9a-9075-43cf-bc50-2908ff06f1de', 'type': 'tool_call'}]
+2026-04-23 19:26:47,514 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 19:26:47,526 - ollama_coder.cli - INFO - === TOOL NODE START ===
+2026-04-23 19:26:47,526 - ollama_coder.cli - INFO - State messages count: 2
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Is AIMessage: True
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Tool calls present: [{'name': 'BashTool', 'args': {'command': 'rm research.md'}, 'id': '58f02d9a-9075-43cf-bc50-2908ff06f1de', 'type': 'tool_call'}]
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Tool calls type: <class 'list'>
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Tool calls length: 1
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Tool call 0: {'name': 'BashTool', 'args': {'command': 'rm research.md'}, 'id': '58f02d9a-9075-43cf-bc50-2908ff06f1de', 'type': 'tool_call'}
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Tool call 0 type: <class 'dict'>
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Processing tool call: {'name': 'BashTool', 'args': {'command': 'rm research.md'}, 'id': '58f02d9a-9075-43cf-bc50-2908ff06f1de', 'type': 'tool_call'}
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Tool call is dict
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Dict extraction - id: 58f02d9a-9075-43cf-bc50-2908ff06f1de, name: BashTool, args: {'command': 'rm research.md'}
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Final tool_call_id: 58f02d9a-9075-43cf-bc50-2908ff06f1de
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Final tool_name: BashTool
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Executing BashTool
+2026-04-23 19:26:47,527 - ollama_coder.cli - INFO - Command: rm research.md
+2026-04-23 19:26:47,558 - ollama_coder.cli - INFO - Tool result: Command executed successfully
+2026-04-23 19:26:47,558 - ollama_coder.cli - INFO - Created ToolMessage
+2026-04-23 19:26:47,558 - ollama_coder.cli - INFO - Tool results count: 1
+2026-04-23 19:26:47,558 - ollama_coder.cli - INFO - === TOOL NODE END ===
+2026-04-23 19:26:47,559 - ollama_coder.cli - INFO - === CHAT NODE START ===
+2026-04-23 19:26:47,559 - ollama_coder.cli - INFO - State messages count: 3
+2026-04-23 19:26:47,559 - ollama_coder.cli - INFO - Last message type: <class 'langchain_core.messages.tool.ToolMessage'>
+2026-04-23 19:26:47,559 - ollama_coder.cli - INFO - Last message content: Command executed successfully
+2026-04-23 19:26:47,559 - ollama_coder.cli - INFO - Processed message length: 29
+2026-04-23 19:26:47,559 - ollama_coder.cli - INFO - Messages prepared for model: 4
+2026-04-23 19:26:53,532 - ollama_coder.cli - INFO - Model response type: <class 'langchain_core.messages.ai.AIMessage'>
+2026-04-23 19:26:53,533 - ollama_coder.cli - INFO - Model response: content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:56:53.529093Z', 'done': True, 'done_reason': 'stop', 'total_duration': 5965336292, 'load_duration': 115586958, 'prompt_eval_count': 1289, 'prompt_eval_duration': 4438979500, 'eval_count': 19, 'eval_duration': 1393835497, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'} id='lc_run--019dbaa1-0348-7b11-9e72-67f815dcb14f-0' tool_calls=[] invalid_tool_calls=[] usage_metadata={'input_tokens': 1289, 'output_tokens': 19, 'total_tokens': 1308}
+2026-04-23 19:26:53,533 - ollama_coder.cli - INFO - Tool calls in response: []
+2026-04-23 19:26:53,533 - ollama_coder.cli - INFO - === CHAT NODE END ===
+2026-04-23 19:26:53,538 - ollama_coder.cli - INFO - Response from app.invoke: {'messages': [HumanMessage(content='delete @@research.md file', additional_kwargs={}, response_metadata={}, id='a3f878aa-32cc-43ba-8875-2b86330669ef'), AIMessage(content='', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:56:47.502636Z', 'done': True, 'done_reason': 'stop', 'total_duration': 32063519042, 'load_duration': 4395766709, 'prompt_eval_count': 1347, 'prompt_eval_duration': 7557277083, 'eval_count': 257, 'eval_duration': 19956613790, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dbaa0-85c9-70b1-b56f-f555ded963f3-0', tool_calls=[{'name': 'BashTool', 'args': {'command': 'rm research.md'}, 'id': '58f02d9a-9075-43cf-bc50-2908ff06f1de', 'type': 'tool_call'}], invalid_tool_calls=[], usage_metadata={'input_tokens': 1347, 'output_tokens': 257, 'total_tokens': 1604}), ToolMessage(content='Command executed successfully', id='65369906-1ca5-44d4-a25a-68a6465f2b61', tool_call_id='58f02d9a-9075-43cf-bc50-2908ff06f1de'), AIMessage(content='', additional_kwargs={}, response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T13:56:53.529093Z', 'done': True, 'done_reason': 'stop', 'total_duration': 5965336292, 'load_duration': 115586958, 'prompt_eval_count': 1289, 'prompt_eval_duration': 4438979500, 'eval_count': 19, 'eval_duration': 1393835497, 'logprobs': None, 'model_name': 'qwen3.5:9b', 'model_provider': 'ollama'}, id='lc_run--019dbaa1-0348-7b11-9e72-67f815dcb14f-0', tool_calls=[], invalid_tool_calls=[], usage_metadata={'input_tokens': 1289, 'output_tokens': 19, 'total_tokens': 1308})]}
+2026-04-23 19:26:53,538 - ollama_coder.cli - INFO - Response messages count: 4
+2026-04-23 19:26:53,538 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.human.HumanMessage'>, content_preview=content='delete @@research.md file' additional_kwargs={} response_metadata={} id='a3f878aa-32cc-43ba
+2026-04-23 19:26:53,538 - ollama_coder.cli - INFO - Human message: delete @@research.md file
+2026-04-23 19:26:53,538 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T
+2026-04-23 19:26:53,538 - ollama_coder.cli - INFO - AI message with tool calls: [{'name': 'BashTool', 'args': {'command': 'rm research.md'}, 'id': '58f02d9a-9075-43cf-bc50-2908ff06f1de', 'type': 'tool_call'}]
+2026-04-23 19:26:53,542 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.tool.ToolMessage'>, content_preview=content='Command executed successfully' id='65369906-1ca5-44d4-a25a-68a6465f2b61' tool_call_id='58f0
+2026-04-23 19:26:53,542 - ollama_coder.cli - INFO - Tool message: Command executed successfully
+2026-04-23 19:26:53,542 - ollama_coder.cli - INFO - Processing message: type=<class 'langchain_core.messages.ai.AIMessage'>, content_preview=content='' additional_kwargs={} response_metadata={'model': 'qwen3.5:9b', 'created_at': '2026-04-23T
