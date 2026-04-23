@@ -752,10 +752,11 @@ Your operations are restricted to: {cwd}
                     logger.debug(f"Could not read previous state: {e}")
 
                 # Get model response
-                response = self.app.invoke(
-                    {"messages": [("user", user_input)]},
-                    config=config,
-                )
+                with self.console.status("[bold yellow]Thinking...[/bold yellow]", spinner="dots"):
+                    response = self.app.invoke(
+                        {"messages": [("user", user_input)]},
+                        config=config,
+                    )
 
                 logger.info(f"Response from app.invoke: {response}")
                 logger.info(f"Response messages count: {len(response['messages'])}")
