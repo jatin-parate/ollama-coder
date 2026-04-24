@@ -2,6 +2,23 @@
 
 A beautiful terminal chat application using Ollama local instance.
 
+## Architecture
+
+This project follows a modular architecture with clear separation of concerns:
+
+```
+src/ollama_coder/
+├── config/          # Configuration management
+├── core/            # Core business logic
+├── exceptions/      # Custom exceptions
+├── memory/          # Project memory management
+├── tools/           # Tool implementations
+├── ui/              # UI rendering and interaction
+└── utils/           # Utility functions
+```
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture documentation.
+
 ## Setup
 
 1. Make sure Ollama is running locally:
@@ -82,3 +99,76 @@ export OLLAMA_HISTORY_TOKENS=4096
 export OLLAMA_TEMPERATURE=0
 uv run ollama-coder
 ```
+
+## Extending the CLI
+
+### Adding New Tools
+
+1. Create a new tool class in `src/ollama_coder/tools/`:
+```python
+from tools.base import BaseTool
+
+class MyTool(BaseTool):
+    description = "My custom tool"
+    
+    def execute(self) -> str:
+        # Your implementation
+        return "Result"
+    
+    def validate(self) -> bool:
+        return True
+```
+
+2. Register the tool in `tools/registry.py`:
+```python
+self.register_tool(MyTool)
+```
+
+### Adding New Memory Strategies
+
+1. Create a new extractor in `src/ollama_coder/memory/`:
+```python
+class MyExtractor:
+    def extract_facts(self, transcript: str) -> List[str]:
+        # Your extraction logic
+        return facts
+```
+
+2. Use the extractor in `core/agent.py`:
+```python
+extractor = MyExtractor()
+facts = extractor.extract_facts(transcript)
+```
+
+## Development
+
+### Running Tests
+
+```bash
+pytest src/ollama_coder/
+```
+
+### Code Quality
+
+```bash
+# Linting
+ruff check src/ollama_coder/
+
+# Type checking
+mypy src/ollama_coder/
+```
+
+### Building
+
+```bash
+uv build
+```
+
+## Documentation
+
+- [Architecture](docs/ARCHITECTURE.md) - Detailed architecture documentation
+- [Migration Guide](docs/MIGRATION_GUIDE.md) - Migration from monolithic to modular
+
+## License
+
+MIT

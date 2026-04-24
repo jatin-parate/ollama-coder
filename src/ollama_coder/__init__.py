@@ -1,3 +1,6 @@
-"""Ollama Coder CLI - A terminal chat interface using Ollama and LangChain."""
+"""Ollama Coder - An AI coding assistant CLI."""
 
-__version__ = "0.1.0"
+from .cli import OllamaChatCLI
+
+__all__ = ["OllamaChatCLI"]
+__version__ = "1.0.0"
